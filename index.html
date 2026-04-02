@@ -1236,7 +1236,8 @@ function initMap() {
 function addMarkers() {
     SERVICES.forEach(s => {
         if (markers[s.id]) return;
-        const cfg = CAT[s.category];
+        if (!s.lat || !s.lng) return;
+        const cfg = CAT[s.category] || CAT['government'];
         const icon = L.divIcon({
             className: "",
             html: `<div style="
@@ -1328,7 +1329,7 @@ function renderList() {
 
     list.innerHTML = "";
     filtered.forEach(s => {
-        const cfg  = CAT[s.category];
+        const cfg  = CAT[s.category] || CAT['government'];
         const item = document.createElement("div");
         item.className  = "list-item";
         item.dataset.id = s.id;
@@ -1370,7 +1371,7 @@ function getFiltered() {
             || s.name.toLowerCase().includes(q)
             || s.address.toLowerCase().includes(q)
             || s.desc.toLowerCase().includes(q)
-            || CAT[s.category].label.toLowerCase().includes(q)
+            || (CAT[s.category] || CAT['government']).label.toLowerCase().includes(q)
             || s.category.includes(q);
         return matchCat && matchQ;
     });

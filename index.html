@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Help LA — Free Community Resources Near You</title>
+
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ═══════════════════════════════════════════════════════════════
+           PALETTE CONSTANTS — never used directly; themes reference these
+        ═══════════════════════════════════════════════════════════════ */
+        :root {
+            /* Typography */
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body:    'DM Sans', 'Segoe UI', system-ui, sans-serif;
+            --text-2xs: 0.68rem;
+            --text-xs:  0.75rem;
+            --text-sm:  0.8125rem;
+            --text-base:0.875rem;
+            --text-md:  1rem;
+
+            /* Radii */
+            --r-sm:   4px;  --r-md: 8px;  --r-lg: 12px;
+            --r-xl:   18px; --r-full: 9999px;
+
+            /* Status (same in both modes) */
+            --status-green:  #22C55E;
+            --status-red:    #EF4444;
+            --status-amber:  #F59E0B;
+
+            /* Category badge / pin colors (same in both modes) */
+            --cat-food-pin:   #F59E0B; --cat-food-bg:  #FEF3C7; --cat-food-text:  #92400E;
+            --cat-shelt-pin:  #3B82F6; --cat-shelt-bg: #DBEAFE; --cat-shelt-text: #1E40AF;
+            --cat-hlth-pin:   #EC4899; --cat-hlth-bg:  #FCE7F3; --cat-hlth-text:  #9D174D;
+            --cat-gov-pin:    #8B5CF6; --cat-gov-bg:   #EDE9FE; --cat-gov-text:   #5B21B6;
+            --cat-fin-pin:    #10B981; --cat-fin-bg:   #D1FAE5; --cat-fin-text:   #065F46;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           DAYBREAK SANCTUARY — Light Mode
+           Primary: #1A237E (deep navy)   Secondary: #82AC88 (sage green)
+           Accent:  #E8963A (amber CTA)   Neutral:   clean off-whites
+        ═══════════════════════════════════════════════════════════════ */
+        :root,
+        [data-theme="light"] {
+            --t-bg:              #F3F4F6;
+            --t-surface:         #FFFFFF;
+            --t-surface-raised:  #F9FAFB;
+            --t-surface-hover:   #F3F4F6;
+            --t-border:          #E5E7EB;
+            --t-border-faint:    #F0F1F3;
+
+            --t-text:            #1F2937;
+            --t-text-muted:      #6B7280;
+            --t-text-faint:      #9CA3AF;
+            --t-text-placeholder:#D1D5DB;
+
+            /* Primary — navy #1A237E */
+            --t-primary:         #1A237E;
+            --t-primary-dark:    #111660;
+            --t-primary-muted:   rgba(26,35,126,0.06);
+            --t-primary-ring:    rgba(26,35,126,0.12);
+
+            /* Sage secondary (from Daybreak Sanctuary) */
+            --t-sage:            #82AC88;
+            --t-sage-bg:         #EBF4EC;
+
+            /* Accent CTA — amber */
+            --t-accent:          #E8963A;
+            --t-accent-dark:     #C97A1E;
+            --t-accent-glow:     rgba(232,150,58,0.40);
+
+            /* Logo */
+            --t-logo-mark:       #E8963A;
+            --t-logo-name:       #1A237E;
+
+            /* Banner */
+            --t-banner-bg:       #1A237E;
+            --t-banner-text:     rgba(255,255,255,0.92);
+            --t-banner-link:     #F0AA5A;
+            --t-banner-divider:  rgba(255,255,255,0.22);
+
+            /* Chip filters */
+            --t-chip-bg:         #FFFFFF;
+            --t-chip-text:       #4B5563;
+            --t-chip-border:     #E5E7EB;
+            --t-chip-active-bg:  #1A237E;
+
+            /* Topbar */
+            --t-topbar-bg:       #FFFFFF;
+            --t-divider:         #E5E7EB;
+
+            /* List panel */
+            --t-panel-bg:        #FFFFFF;
+            --t-panel-head:      #F9FAFB;
+            --t-item-active-bg:  rgba(26,35,126,0.05);
+            --t-item-hover-bg:   #F9FAFB;
+            --t-tab-active:      #1A237E;
+
+            /* Search input */
+            --t-input-bg:        #F9FAFB;
+            --t-input-border:    #E5E7EB;
+
+            /* Popup */
+            --t-popup-bg:        #FFFFFF;
+            --t-popup-head:      #F9FAFB;
+            --t-popup-border:    #E5E7EB;
+            --t-popup-row-div:   #F3F4F6;
+
+            /* Shadows */
+            --shadow-xs: 0 1px 3px rgba(0,0,0,0.07);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+            --shadow-lg: 0 8px 28px rgba(0,0,0,0.14);
+            --shadow-xl: 0 16px 48px rgba(0,0,0,0.18);
+
+            /* Map tiles URL (set in JS, referenced here for documentation) */
+            --map-tiles: voyager;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           MIDNIGHT REFUGE — Dark Mode
+           Primary: #1A237E (navy)  Secondary: #C5A059 (gold)
+           Tertiary: #2F4F4F (teal) Background: deep near-black
+        ═══════════════════════════════════════════════════════════════ */
+        [data-theme="dark"] {
+            --t-bg:              #0E0F1C;
+            --t-surface:         #161728;
+            --t-surface-raised:  #1E1F34;
+            --t-surface-hover:   #252640;
+            --t-border:          rgba(255,255,255,0.09);
+            --t-border-faint:    rgba(255,255,255,0.05);
+
+            --t-text:            #DDE0F0;
+            --t-text-muted:      #8A8DAA;
+            --t-text-faint:      #52546E;
+            --t-text-placeholder:#3E3F58;
+
+            /* Primary — lighter indigo so it reads on dark backgrounds */
+            --t-primary:         #7986CB;
+            --t-primary-dark:    #5C6BC0;
+            --t-primary-muted:   rgba(121,134,203,0.14);
+            --t-primary-ring:    rgba(121,134,203,0.22);
+
+            /* Teal (Midnight Refuge tertiary) */
+            --t-sage:            #4E8060;
+            --t-sage-bg:         rgba(47,79,79,0.25);
+
+            /* Accent CTA — gold (from Midnight Refuge secondary) */
+            --t-accent:          #C5A059;
+            --t-accent-dark:     #A8872A;
+            --t-accent-glow:     rgba(197,160,89,0.38);
+
+            /* Logo */
+            --t-logo-mark:       #C5A059;
+            --t-logo-name:       #C5A059;
+
+            /* Banner */
+            --t-banner-bg:       #0A0B15;
+            --t-banner-text:     rgba(255,255,255,0.82);
+            --t-banner-link:     #C5A059;
+            --t-banner-divider:  rgba(255,255,255,0.12);
+
+            /* Chip filters */
+            --t-chip-bg:         #1E1F34;
+            --t-chip-text:       #8A8DAA;
+            --t-chip-border:     rgba(255,255,255,0.09);
+            --t-chip-active-bg:  #1A237E;
+
+            /* Topbar */
+            --t-topbar-bg:       #161728;
+            --t-divider:         rgba(255,255,255,0.09);
+
+            /* List panel */
+            --t-panel-bg:        #161728;
+            --t-panel-head:      #1E1F34;
+            --t-item-active-bg:  rgba(121,134,203,0.14);
+            --t-item-hover-bg:   rgba(255,255,255,0.04);
+            --t-tab-active:      #7986CB;
+
+            /* Search input */
+            --t-input-bg:        #1E1F34;
+            --t-input-border:    rgba(255,255,255,0.10);
+
+            /* Popup */
+            --t-popup-bg:        #1E1F34;
+            --t-popup-head:      #262740;
+            --t-popup-border:    rgba(255,255,255,0.09);
+            --t-popup-row-div:   rgba(255,255,255,0.06);
+
+            /* Shadows (deeper on dark) */
+            --shadow-xs: 0 1px 4px rgba(0,0,0,0.28);
+            --shadow-sm: 0 2px 10px rgba(0,0,0,0.35);
+            --shadow-md: 0 4px 18px rgba(0,0,0,0.42);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.52);
+            --shadow-xl: 0 16px 52px rgba(0,0,0,0.65);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           BASE
+        ═══════════════════════════════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            font-family: var(--font-body);
+            background: var(--t-bg);
+            color: var(--t-text);
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+        body { display: flex; flex-direction: column; overflow: hidden; }
+
+        /* ── EMERGENCY BANNER ─────────────────────────────── */
+        .banner {
+            background: var(--t-banner-bg);
+            color: var(--t-banner-text);
+            text-align: center;
+            padding: 7px 16px;
+            font-size: var(--text-xs);
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-shrink: 0;
+            z-index: 100;
+            transition: background 0.25s ease;
+        }
+        .banner a { color: var(--t-banner-link); text-decoration: none; font-weight: 800; }
+        .banner a:hover { text-decoration: underline; }
+        .banner-divider { color: var(--t-banner-divider); }
+
+        /* ── TOP BAR ──────────────────────────────────────── */
+        .topbar {
+            background: var(--t-topbar-bg);
+            border-bottom: 1px solid var(--t-border);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-xs);
+            flex-shrink: 0;
+            z-index: 200;
+            transition: background 0.25s ease, border-color 0.25s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex-shrink: 0;
+            text-decoration: none;
+        }
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            background: var(--t-logo-mark);
+            border-radius: var(--r-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+            transition: background 0.25s ease;
+        }
+        .logo-text { display: flex; flex-direction: column; line-height: 1; }
+        .logo-name {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            color: var(--t-logo-name);
+            font-weight: 700;
+            transition: color 0.25s ease;
+        }
+        .logo-sub {
+            font-size: var(--text-2xs);
+            color: var(--t-text-faint);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-top: 2px;
+        }
+
+        .topbar-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--t-divider);
+            flex-shrink: 0;
+        }
+
+        /* Search */
+        .search-wrap {
+            flex: 1;
+            max-width: 380px;
+            position: relative;
+        }
+        .search-wrap svg {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--t-text-faint);
+            pointer-events: none;
+        }
+        .search-wrap input {
+            width: 100%;
+            height: 36px;
+            padding: 0 14px 0 32px;
+            border: 1.5px solid var(--t-input-border);
+            border-radius: var(--r-full);
+            font-family: var(--font-body);
+            font-size: var(--text-sm);
+            background: var(--t-input-bg);
+            color: var(--t-text);
+            outline: none;
+            transition: all 0.18s;
+        }
+        .search-wrap input::placeholder { color: var(--t-text-placeholder); }
+        .search-wrap input:focus {
+            border-color: var(--t-primary);
+            background: var(--t-surface);
+            box-shadow: 0 0 0 3px var(--t-primary-ring);
+        }
+
+        /* Filter chips */
+        .chips {
+            display: flex;
+            gap: 5px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .chips::-webkit-scrollbar { display: none; }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 11px;
+            border-radius: var(--r-full);
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.12s;
+            border: 1.5px solid var(--t-chip-border);
+            background: var(--t-chip-bg);
+            color: var(--t-chip-text);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .chip:hover  { border-color: var(--t-primary); color: var(--t-primary); }
+        .chip.active { background: var(--t-chip-active-bg); border-color: var(--t-chip-active-bg); color: white; }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--r-md);
+            border: 1.5px solid var(--t-border);
+            background: var(--t-input-bg);
+            color: var(--t-text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            font-size: 1rem;
+            transition: all 0.18s;
+        }
+        .theme-toggle:hover {
+            background: var(--t-surface-hover);
+            color: var(--t-text);
+            border-color: var(--t-primary);
+        }
+
+        .location-note {
+            font-size: var(--text-xs);
+            color: var(--t-text-faint);
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* ── MAIN LAYOUT ─────────────────────────────────── */
+        .app {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ── SERVICE LIST PANEL ──────────────────────────── */
+        .list-panel {
+            width: 340px;
+            min-width: 280px;
+            background: var(--t-panel-bg);
+            border-right: 1px solid var(--t-border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+            z-index: 10;
+            transition: background 0.25s ease, border-color 0.25s ease;
+        }
+
+        .panel-head {
+            background: var(--t-panel-head);
+            border-bottom: 1px solid var(--t-border);
+            flex-shrink: 0;
+            transition: background 0.25s ease;
+        }
+        .panel-tabs { display: flex; padding: 0 4px; }
+        .panel-tab {
+            flex: 1;
+            padding: 10px 8px;
+            text-align: center;
+            font-size: var(--text-xs);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--t-text-faint);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.12s;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            font-family: var(--font-body);
+        }
+        .panel-tab:hover { color: var(--t-text-muted); }
+        .panel-tab.active { color: var(--t-tab-active); border-bottom-color: var(--t-tab-active); }
+
+        .panel-search {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--t-border);
+            position: relative;
+            flex-shrink: 0;
+        }
+        .panel-search svg {
+            position: absolute;
+            left: 22px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--t-text-faint);
+            pointer-events: none;
+        }
+        .panel-search input {
+            width: 100%;
+            height: 30px;
+            padding: 0 10px 0 26px;
+            border: 1px solid var(--t-input-border);
+            border-radius: var(--r-full);
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            background: var(--t-input-bg);
+            color: var(--t-text);
+            outline: none;
+            transition: all 0.15s;
+        }
+        .panel-search input::placeholder { color: var(--t-text-placeholder); }
+        .panel-search input:focus {
+            border-color: var(--t-primary);
+            background: var(--t-surface);
+        }
+
+        .result-count {
+            padding: 6px 14px 2px;
+            font-size: var(--text-2xs);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--t-text-faint);
+            flex-shrink: 0;
+        }
+
+        .panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 4px 0;
+        }
+        .panel-body::-webkit-scrollbar { width: 4px; }
+        .panel-body::-webkit-scrollbar-thumb {
+            background: var(--t-border);
+            border-radius: 2px;
+        }
+
+        /* ── SERVICE LIST ITEMS ──────────────────────────── */
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--t-border-faint);
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+        .list-item:hover  { background: var(--t-item-hover-bg); }
+        .list-item.active { background: var(--t-item-active-bg); }
+        .list-item:last-child { border-bottom: none; }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+        .dot-green { background: var(--status-green); box-shadow: 0 0 0 2px rgba(34,197,94,0.2); }
+        .dot-amber { background: var(--status-amber); box-shadow: 0 0 0 2px rgba(245,158,11,0.2); }
+        .dot-red   { background: var(--status-red);   box-shadow: 0 0 0 2px rgba(239,68,68,0.2); }
+
+        .item-content { flex: 1; min-width: 0; }
+        .item-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 6px;
+            margin-bottom: 3px;
+        }
+        .item-name {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--t-text);
+            line-height: 1.35;
+            flex: 1;
+            transition: color 0.15s;
+        }
+        .list-item.active .item-name { color: var(--t-primary); font-weight: 700; }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 7px;
+            border-radius: var(--r-full);
+            font-size: var(--text-2xs);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .badge-food      { background: var(--cat-food-bg);  color: var(--cat-food-text); }
+        .badge-shelter   { background: var(--cat-shelt-bg); color: var(--cat-shelt-text); }
+        .badge-health    { background: var(--cat-hlth-bg);  color: var(--cat-hlth-text); }
+        .badge-government, .badge-gov { background: var(--cat-gov-bg); color: var(--cat-gov-text); }
+        .badge-financial { background: var(--cat-fin-bg);   color: var(--cat-fin-text); }
+
+        .item-meta {
+            font-size: var(--text-2xs);
+            color: var(--t-text-faint);
+            line-height: 1.4;
+            margin-top: 2px;
+        }
+        .item-phone {
+            font-size: var(--text-xs);
+            font-weight: 700;
+            color: var(--t-primary);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.25s ease;
+        }
+        .item-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 7px;
+            flex-wrap: wrap;
+        }
+        .btn-xs {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 4px 10px;
+            border-radius: var(--r-full);
+            font-family: var(--font-body);
+            font-size: var(--text-2xs);
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: all 0.12s;
+            letter-spacing: 0.03em;
+        }
+        .btn-xs-primary {
+            background: var(--t-primary);
+            color: white;
+        }
+        .btn-xs-primary:hover { background: var(--t-primary-dark); }
+        .btn-xs-outline {
+            background: var(--t-primary-muted);
+            color: var(--t-primary);
+            border: 1px solid var(--t-primary-ring);
+        }
+        .btn-xs-outline:hover { background: var(--t-item-active-bg); }
+
+        /* ── MAP AREA ─────────────────────────────────────── */
+        .map-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        #map { width: 100%; height: 100%; }
+
+        /* FAB */
+        .fab {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 11px 18px;
+            border-radius: var(--r-xl);
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: var(--text-sm);
+            cursor: pointer;
+            border: none;
+            background: var(--t-accent);
+            color: white;
+            box-shadow: 0 4px 16px var(--t-accent-glow);
+            transition: all 0.18s;
+        }
+        .fab:hover { transform: translateY(-2px); box-shadow: 0 6px 22px var(--t-accent-glow); }
+
+        /* ── LEAFLET POPUP OVERRIDE ──────────────────────── */
+        .leaflet-popup-content-wrapper {
+            border-radius: var(--r-lg) !important;
+            box-shadow: var(--shadow-lg) !important;
+            padding: 0 !important;
+            overflow: hidden;
+            background: var(--t-popup-bg) !important;
+        }
+        .leaflet-popup-content { margin: 0 !important; min-width: 0 !important; }
+        .leaflet-popup-tip-container .leaflet-popup-tip {
+            background: var(--t-popup-bg) !important;
+        }
+
+        /* Popup zones */
+        .popup {
+            font-family: var(--font-body);
+            width: 272px;
+        }
+        .popup-head {
+            background: var(--t-popup-head);
+            border-bottom: 1px solid var(--t-popup-border);
+            padding: 10px 13px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .popup-head-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--r-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .popup-head-text { flex: 1; min-width: 0; }
+        .popup-head-name {
+            font-size: var(--text-sm);
+            font-weight: 700;
+            color: var(--t-text);
+            line-height: 1.3;
+        }
+        .popup-head-cat {
+            font-size: var(--text-2xs);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-top: 2px;
+        }
+        .popup-body { padding: 10px 13px; }
+        .popup-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 5px 0;
+            border-bottom: 1px solid var(--t-popup-row-div);
+            gap: 10px;
+        }
+        .popup-row:last-child { border-bottom: none; }
+        .popup-row-label {
+            font-size: var(--text-2xs);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--t-text-faint);
+            flex-shrink: 0;
+            padding-top: 1px;
+        }
+        .popup-row-value {
+            font-size: var(--text-xs);
+            font-weight: 600;
+            color: var(--t-text);
+            text-align: right;
+            line-height: 1.4;
+        }
+        .popup-row-value.primary { color: var(--t-primary); }
+        .popup-footer {
+            padding: 9px 13px;
+            border-top: 1px solid var(--t-popup-border);
+            background: var(--t-popup-head);
+            display: flex;
+            gap: 6px;
+        }
+        .popup-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 12px;
+            border-radius: var(--r-md);
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.12s;
+        }
+        .popup-btn-primary { background: var(--t-primary); color: white; }
+        .popup-btn-primary:hover { background: var(--t-primary-dark); }
+        .popup-btn-secondary {
+            background: var(--t-input-bg);
+            color: var(--t-text-muted);
+            border: 1px solid var(--t-border);
+        }
+        .popup-btn-secondary:hover { background: var(--t-surface-hover); color: var(--t-text); }
+
+        /* ── MODAL OVERLAY ───────────────────────────────── */
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(3px);
+        }
+        .overlay.open { display: flex; }
+
+        .modal {
+            background: var(--t-surface);
+            border-radius: var(--r-xl);
+            overflow: hidden;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--t-border);
+        }
+        .modal-head {
+            padding: 22px 24px 16px;
+            border-bottom: 1px solid var(--t-border);
+        }
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            color: var(--t-primary);
+            margin-bottom: 4px;
+        }
+        .modal-sub {
+            font-size: var(--text-sm);
+            color: var(--t-text-muted);
+            line-height: 1.55;
+        }
+        .modal-body { padding: 20px 24px; }
+
+        .form-group { margin-bottom: 13px; }
+        .form-label {
+            display: block;
+            font-size: var(--text-xs);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--t-text-muted);
+            margin-bottom: 4px;
+        }
+        .req { color: var(--status-red); margin-left: 2px; }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid var(--t-input-border);
+            border-radius: var(--r-md);
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            background: var(--t-input-bg);
+            color: var(--t-text);
+            outline: none;
+            transition: all 0.18s;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--t-primary);
+            background: var(--t-surface);
+            box-shadow: 0 0 0 3px var(--t-primary-ring);
+        }
+        .form-input::placeholder { color: var(--t-text-placeholder); }
+        .form-textarea { resize: vertical; min-height: 80px; }
+
+        /* Dark mode select needs extra help */
+        .form-select option { background: var(--t-surface); color: var(--t-text); }
+
+        .modal-foot {
+            padding: 14px 24px;
+            border-top: 1px solid var(--t-border);
+            background: var(--t-surface-raised);
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 18px;
+            border-radius: var(--r-md);
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: var(--text-sm);
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            text-decoration: none;
+            transition: all 0.18s;
+        }
+        .btn-primary { background: var(--t-primary); color: white; border-color: var(--t-primary); }
+        .btn-primary:hover { background: var(--t-primary-dark); }
+        .btn-ghost {
+            background: transparent;
+            color: var(--t-text-muted);
+            border-color: var(--t-border);
+        }
+        .btn-ghost:hover { background: var(--t-surface-hover); color: var(--t-text); }
+
+        /* ── SUCCESS MODAL ───────────────────────────────── */
+        .success-body {
+            text-align: center;
+            padding: 32px 24px;
+        }
+        .success-icon { font-size: 3rem; margin-bottom: 14px; display: block; }
+        .success-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            color: var(--t-primary);
+            margin-bottom: 10px;
+        }
+        .success-msg {
+            font-size: var(--text-sm);
+            color: var(--t-text-muted);
+            line-height: 1.65;
+            max-width: 320px;
+            margin: 0 auto 22px;
+        }
+
+        /* ── LOADING STATE ───────────────────────────────── */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            color: var(--t-text-faint);
+            gap: 10px;
+        }
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 2.5px solid var(--t-border);
+            border-top-color: var(--t-primary);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { font-size: var(--text-sm); font-weight: 600; color: var(--t-text-muted); }
+
+        /* ── EMPTY STATE ─────────────────────────────────── */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 36px 20px;
+            color: var(--t-text-faint);
+            text-align: center;
+            gap: 6px;
+        }
+        .empty-state-icon { font-size: 2rem; margin-bottom: 4px; }
+        .empty-state-title { font-size: var(--text-sm); font-weight: 700; color: var(--t-text-muted); }
+        .empty-state-msg { font-size: var(--text-xs); line-height: 1.5; color: var(--t-text-faint); }
+        .empty-state-link {
+            font-size: var(--text-xs);
+            font-weight: 700;
+            color: var(--t-primary);
+            text-decoration: none;
+            margin-top: 8px;
+        }
+
+        /* ── MOBILE ──────────────────────────────────────── */
+        @media (max-width: 720px) {
+            body { overflow: auto; }
+            .app { flex-direction: column; overflow: auto; }
+            .chips { display: none; }
+            .location-note { display: none; }
+            .topbar-divider { display: none; }
+            .logo-sub { display: none; }
+            .list-panel {
+                width: 100%;
+                min-width: unset;
+                border-right: none;
+                border-bottom: 1px solid var(--t-border);
+                max-height: 46vh;
+                box-shadow: none;
+            }
+            .map-area { height: 55vw; min-height: 260px; flex: none; }
+            .fab { bottom: 14px; right: 14px; padding: 9px 15px; font-size: var(--text-xs); }
+            .mobile-cats {
+                display: flex;
+                overflow-x: auto;
+                padding: 8px 10px;
+                gap: 6px;
+                background: var(--t-topbar-bg);
+                border-top: 1px solid var(--t-border);
+                scrollbar-width: none;
+                flex-shrink: 0;
+            }
+            .mobile-cats::-webkit-scrollbar { display: none; }
+        }
+        @media (min-width: 721px) {
+            .mobile-cats { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- EMERGENCY BANNER -->
+<div class="banner">
+    Need help right now? Call <a href="tel:211">2-1-1</a> &mdash; free, 24/7, all LA County services
+    <span class="banner-divider">|</span>
+    Mental health crisis: <a href="tel:988">9-8-8</a>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <a class="logo" href="#">
+        <div class="logo-mark">🗺</div>
+        <div class="logo-text">
+            <span class="logo-name">Find Help LA</span>
+            <span class="logo-sub">Los Angeles County</span>
+        </div>
+    </a>
+
+    <div class="topbar-divider"></div>
+
+    <div class="search-wrap">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search food, shelter, clinics, CalFresh…" autocomplete="off">
+    </div>
+
+    <div class="chips" id="topbarChips">
+        <button class="chip active" data-cat="all">All</button>
+        <button class="chip" data-cat="food">🍎 Food</button>
+        <button class="chip" data-cat="shelter">🏠 Shelter</button>
+        <button class="chip" data-cat="health">🏥 Healthcare</button>
+        <button class="chip" data-cat="government">🏛 Gov't</button>
+        <button class="chip" data-cat="financial">💼 Financial</button>
+    </div>
+
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark / light mode" aria-label="Toggle dark/light mode">
+        🌙
+    </button>
+
+    <span class="location-note">LA County</span>
+</div>
+
+<!-- MAIN APP -->
+<div class="app">
+
+    <!-- SERVICE LIST PANEL -->
+    <div class="list-panel">
+        <div class="panel-head">
+            <div class="panel-tabs">
+                <button class="panel-tab active" id="tabCategory" onclick="setTab('category')">By Category</button>
+                <button class="panel-tab" id="tabNearest" onclick="setTab('nearest')">Nearest First</button>
+            </div>
+        </div>
+        <div class="panel-search">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <input type="text" id="panelSearch" placeholder="Filter this list…" autocomplete="off">
+        </div>
+        <div class="result-count" id="resultCount"></div>
+        <div class="panel-body" id="serviceList"></div>
+    </div>
+
+    <!-- MAP AREA -->
+    <div class="map-area">
+        <div id="map"></div>
+        <button class="fab" onclick="openModal('suggest')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Suggest a Place
+        </button>
+    </div>
+
+</div>
+
+<!-- MOBILE CATEGORY BAR -->
+<div class="mobile-cats" id="mobileCats">
+    <button class="chip active" data-cat="all">All</button>
+    <button class="chip" data-cat="food">🍎 Food</button>
+    <button class="chip" data-cat="shelter">🏠 Shelter</button>
+    <button class="chip" data-cat="health">🏥 Healthcare</button>
+    <button class="chip" data-cat="government">🏛 Gov't</button>
+    <button class="chip" data-cat="financial">💼 Financial</button>
+</div>
+
+<!-- SUGGESTION MODAL -->
+<div class="overlay" id="suggestOverlay" onclick="bgClose(event,'suggestOverlay')">
+    <div class="modal">
+        <div class="modal-head">
+            <div class="modal-title">Suggest a Place</div>
+            <p class="modal-sub">Know a resource that isn't here? Help your neighbors find it. We review all submissions before publishing.</p>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Organization Name <span class="req">*</span></label>
+                <input class="form-input" type="text" id="f-name" placeholder="e.g. First Baptist Church Food Pantry">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Category <span class="req">*</span></label>
+                <select class="form-select" id="f-cat">
+                    <option value="">Select a category…</option>
+                    <option value="food">Food Bank / Pantry / Free Meals</option>
+                    <option value="shelter">Shelter / Housing Assistance</option>
+                    <option value="health">Free Clinic / Healthcare</option>
+                    <option value="government">Government Services (CalFresh, EDD, SSA…)</option>
+                    <option value="financial">Financial / Legal / Utility Assistance</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Street Address <span class="req">*</span></label>
+                <input class="form-input" type="text" id="f-addr" placeholder="123 Main St, Los Angeles, CA 90000">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input class="form-input" type="tel" id="f-phone" placeholder="(213) 555-0000">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Hours of Operation</label>
+                <input class="form-input" type="text" id="f-hours" placeholder="e.g. Mon–Fri 9am–5pm, walk-ins welcome">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Website</label>
+                <input class="form-input" type="url" id="f-web" placeholder="https://">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Anything else we should know?</label>
+                <textarea class="form-textarea" id="f-notes" placeholder="Services offered, requirements, languages spoken…"></textarea>
+            </div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn btn-ghost" onclick="closeModal('suggestOverlay')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitSuggestion()">Submit</button>
+        </div>
+    </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="overlay" id="successOverlay" onclick="bgClose(event,'successOverlay')">
+    <div class="modal" style="max-width:380px">
+        <div class="success-body">
+            <span class="success-icon">🙏</span>
+            <div class="success-title">Thank You</div>
+            <p class="success-msg">Your suggestion has been submitted. We'll review it and add it to the map. Every listing you share helps someone find what they need.</p>
+            <button class="btn btn-primary" onclick="closeModal('successOverlay')">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+//  SUPABASE CONFIG
+// ============================================================
+const SUPABASE_URL = 'https://zlwekvubnmfpjdzqpfjk.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpsd2VrdnVibm1mcGpkenFwZmprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwODYxMzAsImV4cCI6MjA5MDY2MjEzMH0.Y1YlOuzfz7Xc29KzX69u75WvBJUqrjl-It1m_KTGEGQ';
+
+async function loadServices() {
+    const configured = SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_KEY !== 'YOUR_SUPABASE_ANON_KEY';
+    if (!configured) return FALLBACK_SERVICES;
+    try {
+        const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/services?select=*&order=name`,
+            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const rows = await res.json();
+        if (!rows.length) throw new Error('Empty response');
+        return rows.map(r => ({
+            id:       r.id,
+            category: r.category,
+            name:     r.name,
+            address:  r.address,
+            phone:    r.phone       || '',
+            hours:    r.hours       || '',
+            desc:     r.description || '',
+            web:      r.website     || '',
+            lat:      r.lat,
+            lng:      r.lng
+        }));
+    } catch (err) {
+        console.warn('Supabase fetch failed, using local data:', err.message);
+        return FALLBACK_SERVICES;
+    }
+}
+
+// ============================================================
+//  FALLBACK DATA
+// ============================================================
+const FALLBACK_SERVICES = [
+    { id:1, category:"food", name:"Los Angeles Regional Food Bank", address:"1734 E 41st St, Los Angeles, CA 90058", phone:"(323) 234-3030", hours:"Mon–Fri 8am–4pm", desc:"One of the largest food banks in the US. Distributes food through 600+ partner agencies. Use their pantry locator at lafoodbank.org to find a pickup point near you.", web:"https://www.lafoodbank.org", lat:34.0125, lng:-118.2343 },
+    { id:2, category:"food", name:"Midnight Mission — Free Meals", address:"601 S San Pedro St, Los Angeles, CA 90014", phone:"(213) 624-9258", hours:"365 days/year — Breakfast, Lunch & Dinner", desc:"Serves free hot meals to anyone in need, every single day of the year. No appointment, no ID required. Walk up and you will be fed.", web:"https://www.midnightmission.org", lat:34.0437, lng:-118.2390 },
+    { id:3, category:"food", name:"St. Francis Center", address:"2610 Pasadena Ave, Los Angeles, CA 90031", phone:"(323) 223-4990", hours:"Mon–Fri 7am–3pm", desc:"Free groceries, hot meals, hygiene supplies, and social services. No ID or documentation required. They also connect people to housing and healthcare.", web:"https://stfranciscenterla.org", lat:34.0712, lng:-118.2156 },
+    { id:4, category:"food", name:"SOVA Community Food & Resource Program", address:"9000 W Pico Blvd, Los Angeles, CA 90035", phone:"(310) 859-8951", hours:"Mon, Wed, Thu 9am–1pm", desc:"Provides nutritious groceries for individuals and families. Also offers job training, emergency financial assistance, and legal aid referrals.", web:"https://www.sovaprogram.org", lat:34.0518, lng:-118.3843 },
+    { id:5, category:"food", name:"Union Rescue Mission — Meals", address:"545 S San Pedro St, Los Angeles, CA 90013", phone:"(213) 347-6300", hours:"Daily — multiple meal times", desc:"Hot meals served daily to anyone in the Skid Row area. Largest private homeless shelter on the West Coast also provides food to all who come.", web:"https://urm.org", lat:34.0440, lng:-118.2388 },
+    { id:6, category:"shelter", name:"Union Rescue Mission — Emergency Shelter", address:"545 S San Pedro St, Los Angeles, CA 90013", phone:"(213) 347-6300", hours:"Open 24/7 — call ahead for intake", desc:"Emergency shelter for men, women, and families. Also offers transitional housing, addiction recovery programs, job training, and healthcare on site.", web:"https://urm.org", lat:34.0441, lng:-118.2387 },
+    { id:7, category:"shelter", name:"Los Angeles Mission", address:"303 E 5th St, Los Angeles, CA 90013", phone:"(213) 629-1227", hours:"Open 24/7 — call ahead", desc:"Emergency shelter with meals, case management, addiction recovery, and job training. Serves men, women, and children. No one turned away.", web:"https://www.lamission.org", lat:34.0455, lng:-118.2394 },
+    { id:8, category:"shelter", name:"Covenant House California (Youth Ages 18–24)", address:"1325 N Western Ave, Los Angeles, CA 90027", phone:"(323) 461-3131", hours:"Open 24/7", desc:"Safe emergency shelter specifically for young adults 18–24. No questions asked. Provides meals, case management, mental health, and housing support.", web:"https://covenanthouseca.org", lat:34.1010, lng:-118.3080 },
+    { id:9, category:"shelter", name:"Salvation Army Bell Shelter", address:"4900 S Alameda St, Bell, CA 90201", phone:"(323) 263-2151", hours:"Call for intake hours", desc:"One of the largest shelters in LA County with 350+ beds for men. Provides meals, spiritual care, case management, and recovery services.", web:"https://salvationarmyla.org", lat:33.9831, lng:-118.1620 },
+    { id:10, category:"shelter", name:"PATH — Homeless Services & Outreach", address:"340 N Madison Ave, Pasadena, CA 91101", phone:"(818) 564-7254", hours:"Mon–Fri 8am–5pm", desc:"People Assisting The Homeless. Connects individuals and families to housing and services across LA County. Call 2-1-1 to reach their crisis outreach teams.", web:"https://epath.org", lat:34.1479, lng:-118.1330 },
+    { id:11, category:"health", name:"Venice Family Clinic", address:"604 Rose Ave, Venice, CA 90291", phone:"(310) 392-8630", hours:"Mon–Fri 8am–5pm", desc:"Free and low-cost medical, dental, and mental health care for uninsured and underinsured patients. Sliding scale fees. No one is turned away for inability to pay.", web:"https://venicefamilyclinic.org", lat:33.9893, lng:-118.4672 },
+    { id:12, category:"health", name:"Saban Community Clinic", address:"8405 Beverly Blvd, Los Angeles, CA 90048", phone:"(323) 653-1990", hours:"Mon–Fri 8am–6pm", desc:"Comprehensive primary care, dental, behavioral health, and HIV services. Serves patients regardless of ability to pay. Accepts Medi-Cal, Medicare, and uninsured.", web:"https://www.sabancommunityclinic.org", lat:34.0737, lng:-118.3819 },
+    { id:13, category:"health", name:"JWCH Institute — Wesley Health Centers", address:"1536 E Cesar E Chavez Ave, Los Angeles, CA 90033", phone:"(323) 267-5600", hours:"Mon–Fri 8am–5pm", desc:"Free and low-cost primary care, dental, mental health, and substance use treatment. Multiple locations across LA County. Accepts uninsured patients.", web:"https://www.jwch.org", lat:34.0591, lng:-118.2107 },
+    { id:14, category:"health", name:"Northeast Valley Health Corp", address:"8550 Laurel Canyon Blvd, Sun Valley, CA 91352", phone:"(818) 896-1811", hours:"Mon–Fri 7:30am–5pm", desc:"Federally Qualified Health Center serving the San Fernando Valley. Primary care, dental, mental health, OB/GYN, and WIC on a sliding fee scale.", web:"https://www.nevhc.org", lat:34.2328, lng:-118.3972 },
+    { id:15, category:"health", name:"LA Christian Health Centers", address:"2231 S Western Ave, Los Angeles, CA 90018", phone:"(323) 733-5428", hours:"Mon–Fri 8am–5pm", desc:"Free and reduced-cost medical and dental care for uninsured patients. Also operates a mobile clinic serving neighborhoods across the city. No insurance required.", web:"https://lachc.com", lat:34.0225, lng:-118.3079 },
+    { id:16, category:"government", name:"DPSS East LA — CalFresh, Medi-Cal, CalWORKs", address:"5445 Whittier Blvd, Los Angeles, CA 90022", phone:"(866) 613-3777", hours:"Mon–Fri 7:30am–5pm", desc:"Apply for CalFresh (food stamps), Medi-Cal (health insurance), CalWORKs, and cash assistance. Bring photo ID, proof of address, and income info. Walk-ins welcome.", web:"https://dpss.lacounty.gov", lat:34.0239, lng:-118.1717 },
+    { id:17, category:"government", name:"DPSS Metro District Office", address:"813 E 4th Pl, Los Angeles, CA 90013", phone:"(866) 613-3777", hours:"Mon–Fri 7:30am–5pm", desc:"Downtown LA office for CalFresh, Medi-Cal, CalWORKs, and cash aid applications. Walk-ins welcome. You can also apply online at BenefitsCal.com.", web:"https://dpss.lacounty.gov", lat:34.0432, lng:-118.2368 },
+    { id:18, category:"government", name:"DPSS Van Nuys District Office", address:"7555 Van Nuys Blvd, Van Nuys, CA 91405", phone:"(866) 613-3777", hours:"Mon–Fri 7:30am–5pm", desc:"San Fernando Valley location for CalFresh, Medi-Cal, CalWORKs, and emergency cash assistance. Walk-ins welcome. Apply online at BenefitsCal.com.", web:"https://dpss.lacounty.gov", lat:34.1897, lng:-118.4503 },
+    { id:19, category:"government", name:"Employment Development Dept (EDD) — Unemployment", address:"3325 Wilshire Blvd, Los Angeles, CA 90010", phone:"(800) 300-5616", hours:"Mon–Fri 8am–5pm", desc:"Apply for unemployment insurance, disability insurance (SDI), and Paid Family Leave. Job search and resume resources also available through WorkSource centers.", web:"https://edd.ca.gov", lat:34.0614, lng:-118.3002 },
+    { id:20, category:"government", name:"Social Security Administration — West LA", address:"11000 Wilshire Blvd, Los Angeles, CA 90024", phone:"(800) 772-1213", hours:"Mon–Fri 9am–4pm", desc:"Apply for SSI (Supplemental Security Income), SSDI (disability benefits), retirement benefits, and Medicare enrollment. Bring photo ID and medical documentation.", web:"https://ssa.gov", lat:34.0514, lng:-118.4465 },
+    { id:21, category:"financial", name:"Chrysalis — Jobs & Emergency Assistance", address:"522 S Main St, Los Angeles, CA 90013", phone:"(213) 617-0755", hours:"Mon–Fri 8am–4:30pm", desc:"Free job placement, job readiness training, and transitional employment for people facing homelessness or economic hardship. Also provides emergency financial assistance.", web:"https://www.changelives.org", lat:34.0411, lng:-118.2520 },
+    { id:22, category:"financial", name:"Inner City Law Center", address:"1309 E 7th St, Los Angeles, CA 90021", phone:"(213) 891-2880", hours:"Mon–Fri 9am–5pm", desc:"Free legal help to prevent eviction, fight illegal rent increases, fight wage theft, and resolve housing emergencies for low-income and homeless Angelenos.", web:"https://innercitylaw.org", lat:34.0426, lng:-118.2382 },
+    { id:23, category:"financial", name:"United Way LA — 211 Helpline", address:"Serves all of LA County — call or text 2-1-1", phone:"211", hours:"24 hours a day, 7 days a week", desc:"Free, confidential connection to rental assistance, utility assistance, emergency funds, food, healthcare, childcare, and hundreds more services. Available in multiple languages.", web:"https://unitedwayla.org", lat:34.0550, lng:-118.2650 }
+];
+
+// ============================================================
+//  CATEGORY CONFIG
+// ============================================================
+const CAT = {
+    food:       { label:"Food",           icon:"🍎", pin:"#F59E0B", bg:"#FEF3C7", text:"#92400E" },
+    shelter:    { label:"Shelter",        icon:"🏠", pin:"#3B82F6", bg:"#DBEAFE", text:"#1E40AF" },
+    health:     { label:"Healthcare",     icon:"🏥", pin:"#EC4899", bg:"#FCE7F3", text:"#9D174D" },
+    government: { label:"Gov't Services", icon:"🏛️", pin:"#8B5CF6", bg:"#EDE9FE", text:"#5B21B6" },
+    financial:  { label:"Financial",      icon:"💼", pin:"#10B981", bg:"#D1FAE5", text:"#065F46"  }
+};
+
+// ============================================================
+//  STATE
+// ============================================================
+let activeFilter  = "all";
+let activeTab     = "category";
+let searchQ       = "";
+let panelSearchQ  = "";
+let leafletMap;
+let tileLayer;
+let markers       = {};
+let SERVICES      = [];
+
+// ============================================================
+//  THEME SYSTEM
+// ============================================================
+const TILE_LIGHT = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+const TILE_DARK  = "https://{s}.basemaps.cartocdn.com/dark_matter/{z}/{x}/{y}{r}.png";
+const ATTR       = '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap contributors';
+
+function getTheme() {
+    return document.documentElement.getAttribute("data-theme") || "light";
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("fhla-theme", theme);
+    document.getElementById("themeToggle").textContent = theme === "dark" ? "☀️" : "🌙";
+
+    // Swap Leaflet tiles
+    if (leafletMap && tileLayer) {
+        leafletMap.removeLayer(tileLayer);
+        tileLayer = L.tileLayer(theme === "dark" ? TILE_DARK : TILE_LIGHT, {
+            attribution: ATTR, maxZoom: 19
+        }).addTo(leafletMap);
+        tileLayer.bringToBack();
+    }
+}
+
+document.getElementById("themeToggle").addEventListener("click", () => {
+    applyTheme(getTheme() === "dark" ? "light" : "dark");
+});
+
+// ============================================================
+//  MAP INIT
+// ============================================================
+function initMap() {
+    leafletMap = L.map("map", { zoomControl: false }).setView([34.052, -118.268], 11);
+
+    const savedTheme = localStorage.getItem("fhla-theme") || "light";
+    tileLayer = L.tileLayer(savedTheme === "dark" ? TILE_DARK : TILE_LIGHT, {
+        attribution: ATTR, maxZoom: 19
+    }).addTo(leafletMap);
+
+    L.control.zoom({ position: "bottomleft" }).addTo(leafletMap);
+}
+
+// ============================================================
+//  ADD MARKERS
+// ============================================================
+function addMarkers() {
+    SERVICES.forEach(s => {
+        if (markers[s.id]) return;
+        const cfg = CAT[s.category];
+        const icon = L.divIcon({
+            className: "",
+            html: `<div style="
+                width:32px;height:32px;
+                background:${cfg.pin};
+                border-radius:50% 50% 50% 0;
+                transform:rotate(-45deg);
+                border:2.5px solid white;
+                box-shadow:0 2px 8px rgba(0,0,0,0.28);
+                display:flex;align-items:center;justify-content:center;
+            "><span style="transform:rotate(45deg);display:block;font-size:13px;line-height:1">${cfg.icon}</span></div>`,
+            iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -36]
+        });
+
+        const phoneRow = s.phone === "211"
+            ? `<a href="tel:211" style="color:inherit;font-weight:700;text-decoration:none">Call 2-1-1</a>`
+            : `<a href="tel:${s.phone}" style="color:inherit;font-weight:700;text-decoration:none">${s.phone}</a>`;
+
+        const marker = L.marker([s.lat, s.lng], { icon }).addTo(leafletMap);
+
+        marker.bindPopup(`
+            <div class="popup">
+                <div class="popup-head">
+                    <div class="popup-head-icon" style="background:${cfg.bg}">${cfg.icon}</div>
+                    <div class="popup-head-text">
+                        <div class="popup-head-name">${s.name}</div>
+                        <div class="popup-head-cat" style="color:${cfg.text}">${cfg.label}</div>
+                    </div>
+                </div>
+                <div class="popup-body">
+                    <div class="popup-row">
+                        <span class="popup-row-label">Address</span>
+                        <span class="popup-row-value">${s.address}</span>
+                    </div>
+                    ${s.phone ? `<div class="popup-row">
+                        <span class="popup-row-label">Phone</span>
+                        <span class="popup-row-value primary">${phoneRow}</span>
+                    </div>` : ""}
+                    ${s.hours ? `<div class="popup-row">
+                        <span class="popup-row-label">Hours</span>
+                        <span class="popup-row-value">${s.hours}</span>
+                    </div>` : ""}
+                </div>
+                <div class="popup-footer">
+                    <a class="popup-btn popup-btn-primary"
+                       href="https://maps.google.com/?q=${encodeURIComponent(s.address)}"
+                       target="_blank" rel="noopener">Directions ↗</a>
+                    ${s.web ? `<a class="popup-btn popup-btn-secondary"
+                       href="${s.web}" target="_blank" rel="noopener">Website ↗</a>` : ""}
+                </div>
+            </div>
+        `, { maxWidth: 280 });
+
+        marker.on("click", () => highlightItem(s.id));
+        markers[s.id] = marker;
+    });
+}
+
+// ============================================================
+//  RENDER LIST
+// ============================================================
+function renderList() {
+    const list     = document.getElementById("serviceList");
+    const countEl  = document.getElementById("resultCount");
+    const filtered = getFiltered();
+
+    SERVICES.forEach(s => {
+        const m = markers[s.id];
+        if (!m) return;
+        if (filtered.find(f => f.id === s.id)) {
+            if (!leafletMap.hasLayer(m)) m.addTo(leafletMap);
+        } else {
+            if (leafletMap.hasLayer(m)) m.remove();
+        }
+    });
+
+    countEl.textContent = `${filtered.length} resource${filtered.length !== 1 ? "s" : ""}`;
+
+    if (filtered.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🔍</div>
+                <div class="empty-state-title">Nothing found</div>
+                <p class="empty-state-msg">Try a different search or category. Or call 2-1-1 — they can find anything in LA County.</p>
+                <a class="empty-state-link" href="tel:211">Call 2-1-1 for help →</a>
+            </div>`;
+        return;
+    }
+
+    list.innerHTML = "";
+    filtered.forEach(s => {
+        const cfg  = CAT[s.category];
+        const item = document.createElement("div");
+        item.className  = "list-item";
+        item.dataset.id = s.id;
+
+        const phoneHTML = s.phone === "211"
+            ? `<a href="tel:211" style="color:inherit;text-decoration:none">📞 Call 2-1-1 (24/7 Free)</a>`
+            : `<a href="tel:${s.phone}" style="color:inherit;text-decoration:none">📞 ${s.phone}</a>`;
+
+        item.innerHTML = `
+            <div class="status-dot dot-green"></div>
+            <div class="item-content">
+                <div class="item-top">
+                    <div class="item-name">${s.name}</div>
+                    <span class="badge badge-${s.category}">${cfg.label}</span>
+                </div>
+                <div class="item-meta">📍 ${s.address}</div>
+                ${s.hours ? `<div class="item-meta">🕐 ${s.hours}</div>` : ""}
+                <div class="item-phone">${phoneHTML}</div>
+                <div class="item-actions">
+                    <a href="https://maps.google.com/?q=${encodeURIComponent(s.address)}"
+                       target="_blank" rel="noopener" class="btn-xs btn-xs-primary">Directions</a>
+                    ${s.web ? `<a href="${s.web}" target="_blank" rel="noopener" class="btn-xs btn-xs-outline">Website</a>` : ""}
+                </div>
+            </div>`;
+
+        item.addEventListener("click", () => focusService(s.id));
+        list.appendChild(item);
+    });
+}
+
+// ============================================================
+//  FILTER LOGIC
+// ============================================================
+function getFiltered() {
+    const q = (panelSearchQ || searchQ).toLowerCase().trim();
+    let results = SERVICES.filter(s => {
+        const matchCat = activeFilter === "all" || s.category === activeFilter;
+        const matchQ   = !q
+            || s.name.toLowerCase().includes(q)
+            || s.address.toLowerCase().includes(q)
+            || s.desc.toLowerCase().includes(q)
+            || CAT[s.category].label.toLowerCase().includes(q)
+            || s.category.includes(q);
+        return matchCat && matchQ;
+    });
+    if (activeTab === "nearest") {
+        const center = leafletMap.getCenter();
+        results = results.slice().sort((a, b) => {
+            const da = Math.hypot(a.lat - center.lat, a.lng - center.lng);
+            const db = Math.hypot(b.lat - center.lat, b.lng - center.lng);
+            return da - db;
+        });
+    }
+    return results;
+}
+
+// ============================================================
+//  INTERACTION
+// ============================================================
+function highlightItem(id) {
+    document.querySelectorAll(".list-item").forEach(el => {
+        el.classList.toggle("active", parseInt(el.dataset.id) === id);
+    });
+    const item = document.querySelector(`.list-item[data-id="${id}"]`);
+    if (item) item.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function focusService(id) {
+    const s = SERVICES.find(x => x.id === id);
+    if (!s) return;
+    highlightItem(id);
+    leafletMap.flyTo([s.lat, s.lng], 15, { animate: true, duration: 0.7 });
+    markers[id]?.openPopup();
+}
+
+function setTab(tab) {
+    activeTab = tab;
+    document.getElementById("tabCategory").classList.toggle("active", tab === "category");
+    document.getElementById("tabNearest").classList.toggle("active",  tab === "nearest");
+    renderList();
+}
+
+// ============================================================
+//  EVENT LISTENERS
+// ============================================================
+document.querySelectorAll("#topbarChips .chip, #mobileCats .chip").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".chip[data-cat]").forEach(b =>
+            b.classList.toggle("active", b.dataset.cat === btn.dataset.cat)
+        );
+        activeFilter = btn.dataset.cat;
+        renderList();
+    });
+});
+
+document.getElementById("searchInput").addEventListener("input", e => {
+    searchQ = e.target.value;
+    panelSearchQ = "";
+    document.getElementById("panelSearch").value = "";
+    renderList();
+});
+
+document.getElementById("panelSearch").addEventListener("input", e => {
+    panelSearchQ = e.target.value;
+    searchQ = "";
+    document.getElementById("searchInput").value = "";
+    renderList();
+});
+
+// ============================================================
+//  MODAL
+// ============================================================
+function openModal(id) { document.getElementById(id + "Overlay").classList.add("open"); }
+function closeModal(overlayId) { document.getElementById(overlayId).classList.remove("open"); }
+function bgClose(e, overlayId) {
+    if (e.target === document.getElementById(overlayId)) closeModal(overlayId);
+}
+
+async function submitSuggestion() {
+    const name = document.getElementById("f-name").value.trim();
+    const cat  = document.getElementById("f-cat").value;
+    const addr = document.getElementById("f-addr").value.trim();
+    if (!name || !cat || !addr) {
+        alert("Please fill in Name, Category, and Address before submitting.");
+        return;
+    }
+    const configured = SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_KEY !== 'YOUR_SUPABASE_ANON_KEY';
+    if (configured) {
+        try {
+            await fetch(`${SUPABASE_URL}/rest/v1/submissions`, {
+                method: "POST",
+                headers: {
+                    "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}`,
+                    "Content-Type": "application/json", "Prefer": "return=minimal"
+                },
+                body: JSON.stringify({
+                    name, category: cat, address: addr,
+                    phone:   document.getElementById("f-phone").value.trim() || null,
+                    hours:   document.getElementById("f-hours").value.trim() || null,
+                    website: document.getElementById("f-web").value.trim()   || null,
+                    notes:   document.getElementById("f-notes").value.trim() || null
+                })
+            });
+        } catch (err) { console.warn("Submission failed:", err.message); }
+    }
+    closeModal("suggestOverlay");
+    openModal("success");
+    ["f-name","f-cat","f-addr","f-phone","f-hours","f-web","f-notes"]
+        .forEach(id => { document.getElementById(id).value = ""; });
+}
+
+// ============================================================
+//  BOOT
+// ============================================================
+window.addEventListener("DOMContentLoaded", async () => {
+    // Restore saved theme
+    const savedTheme = localStorage.getItem("fhla-theme") || "light";
+    applyTheme(savedTheme);
+
+    initMap();
+
+    document.getElementById("serviceList").innerHTML = `
+        <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading services…</div>
+        </div>`;
+    document.getElementById("resultCount").textContent = "";
+
+    SERVICES = await loadServices();
+    addMarkers();
+    renderList();
+});
+</script>
+</body>
+</html>

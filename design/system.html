@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Help LA — Design System v2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   Source of truth for all visual decisions.
+   Last updated: April 2026
+   Reference: Runic.io layout adapted for humanitarian context
+═══════════════════════════════════════════════════════════════ */
+
+:root {
+    /* ── SIDEBAR ──────────────────────────────────────────── */
+    --sidebar-bg:         #122A1E;   /* Dark forest green — warm, not cold */
+    --sidebar-bg-hover:   #1A3D2C;
+    --sidebar-bg-active:  #1F4A34;
+    --sidebar-border:     rgba(255,255,255,0.07);
+    --sidebar-text:       rgba(255,255,255,0.55);
+    --sidebar-text-active:#FFFFFF;
+    --sidebar-label:      rgba(255,255,255,0.3);  /* Section separator labels */
+    --sidebar-width:      72px;                    /* Collapsed (icon only) */
+    --sidebar-width-full: 220px;                   /* Expanded (icon + label) */
+
+    /* ── BRAND GREENS ─────────────────────────────────────── */
+    --green-900:  #0A1F13;
+    --green-800:  #122A1E;
+    --green-700:  #1B5B3F;    /* ★ Primary interactive color */
+    --green-600:  #246B4C;
+    --green-500:  #2E8A60;
+    --green-100:  #DCF0E7;
+    --green-50:   #F0FAF5;
+
+    /* ── ACCENT AMBER ─────────────────────────────────────── */
+    --amber-600:  #C97A1E;
+    --amber-500:  #E8963A;    /* ★ CTAs, highlights, active states */
+    --amber-400:  #F0AA5A;
+    --amber-100:  #FDF0E0;
+    --amber-50:   #FEF9F0;
+
+    /* ── STATUS COLORS ────────────────────────────────────── */
+    --status-green:   #22C55E;   /* Open / verified / approved */
+    --status-red:     #EF4444;   /* Closed / error / rejected */
+    --status-amber:   #F59E0B;   /* Pending / unverified */
+    --status-blue:    #3B82F6;   /* Info */
+
+    /* ── NEUTRALS ─────────────────────────────────────────── */
+    --neutral-900:  #111827;
+    --neutral-800:  #1F2937;
+    --neutral-700:  #374151;
+    --neutral-600:  #4B5563;
+    --neutral-500:  #6B7280;
+    --neutral-400:  #9CA3AF;
+    --neutral-300:  #D1D5DB;
+    --neutral-200:  #E5E7EB;
+    --neutral-100:  #F3F4F6;
+    --neutral-50:   #F9FAFB;
+    --white:        #FFFFFF;
+
+    /* ── MAP / CONTENT AREA ───────────────────────────────── */
+    --panel-bg:     #FFFFFF;
+    --panel-header: #F9FAFB;
+    --panel-border: #E5E7EB;
+    --page-bg:      #F3F4F6;
+
+    /* ── CATEGORY PIN + BADGE COLORS ─────────────────────── */
+    --cat-food-pin:  #F59E0B;  --cat-food-bg: #FEF3C7;  --cat-food-text: #92400E;
+    --cat-shelt-pin: #3B82F6;  --cat-shelt-bg:#DBEAFE;  --cat-shelt-text:#1E40AF;
+    --cat-hlth-pin:  #EC4899;  --cat-hlth-bg: #FCE7F3;  --cat-hlth-text: #9D174D;
+    --cat-gov-pin:   #8B5CF6;  --cat-gov-bg:  #EDE9FE;  --cat-gov-text:  #5B21B6;
+    --cat-fin-pin:   #10B981;  --cat-fin-bg:  #D1FAE5;  --cat-fin-text:  #065F46;
+
+    /* ── TYPOGRAPHY ───────────────────────────────────────── */
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body:    'DM Sans', 'Segoe UI', system-ui, sans-serif;
+
+    --text-2xs: 0.68rem;   /* 11px — sidebar labels, fine print */
+    --text-xs:  0.75rem;   /* 12px — badges, timestamps */
+    --text-sm:  0.8125rem; /* 13px — secondary data, muted text */
+    --text-base:0.875rem;  /* 14px — body copy, card content */
+    --text-md:  1rem;      /* 16px — card titles, form labels */
+    --text-lg:  1.125rem;  /* 18px — panel headers */
+    --text-xl:  1.375rem;  /* 22px — page titles */
+    --text-2xl: 1.75rem;   /* 28px — display */
+
+    /* ── SPACING ──────────────────────────────────────────── */
+    --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;  --sp-4: 16px;
+    --sp-5: 20px;  --sp-6: 24px;  --sp-8: 32px;  --sp-10: 40px;
+
+    /* ── RADII ────────────────────────────────────────────── */
+    --r-sm:   4px;
+    --r-md:   8px;
+    --r-lg:   12px;
+    --r-xl:   18px;
+    --r-full: 9999px;
+
+    /* ── SHADOWS ──────────────────────────────────────────── */
+    --shadow-xs: 0 1px 3px rgba(0,0,0,0.07);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 28px rgba(0,0,0,0.14);
+    --shadow-xl: 0 16px 48px rgba(0,0,0,0.18);
+
+    /* ── TRANSITIONS ──────────────────────────────────────── */
+    --t-fast:   all 0.12s ease;
+    --t-base:   all 0.18s ease;
+    --t-slow:   all 0.28s ease;
+}
+
+/* ── BASE ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+    font-family: var(--font-body);
+    background: #E8EAED;
+    color: var(--neutral-800);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── DESIGN SYSTEM PAGE ───────────────────────────────────── */
+.page { max-width: 1040px; margin: 0 auto; padding: 48px 24px 96px; }
+
+.page-header {
+    margin-bottom: 56px;
+    padding-bottom: 28px;
+    border-bottom: 2px solid var(--neutral-200);
+}
+.page-header h1 {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    color: var(--green-700);
+    margin-bottom: 6px;
+}
+.page-header p { color: var(--neutral-500); font-size: var(--text-base); }
+.page-header .version {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 3px 10px;
+    background: var(--amber-100);
+    color: var(--amber-600);
+    border-radius: var(--r-full);
+    font-size: var(--text-xs);
+    font-weight: 700;
+}
+
+.section { margin-bottom: 56px; }
+.section-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--neutral-900);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--neutral-200);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.section-title .tag {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--neutral-400);
+    background: var(--neutral-100);
+    padding: 2px 8px;
+    border-radius: var(--r-full);
+    margin-left: 4px;
+}
+
+.ds-label {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--neutral-400);
+    margin: 20px 0 8px;
+}
+.ds-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start; margin-bottom: 12px; }
+.demo-box {
+    background: white;
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--r-lg);
+    padding: 24px;
+    margin-bottom: 12px;
+}
+.demo-box.dark { background: var(--sidebar-bg); border-color: rgba(255,255,255,0.05); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 1 — COLOR PALETTE
+═══════════════════════════════════════════════════════════════ */
+.swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+.swatch { border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow-xs); border: 1px solid var(--neutral-200); }
+.swatch-color { height: 56px; }
+.swatch-info { background: white; padding: 7px 9px; }
+.swatch-name { font-size: 0.72rem; font-weight: 700; color: var(--neutral-700); }
+.swatch-val  { font-size: 0.65rem; color: var(--neutral-400); font-family: monospace; margin-top: 1px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 2 — SIDEBAR NAVIGATION
+   Core layout component. Dark forest green, icon-first.
+   On desktop: 72px collapsed (icon only) or 220px expanded.
+   On mobile: collapses to bottom tab bar.
+═══════════════════════════════════════════════════════════════ */
+.sidebar-demo {
+    background: var(--sidebar-bg);
+    border-radius: var(--r-lg);
+    width: 220px;
+    padding: 16px 0;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 16px 16px;
+    border-bottom: 1px solid var(--sidebar-border);
+    margin-bottom: 8px;
+}
+.sidebar-logo-mark {
+    width: 32px; height: 32px;
+    background: var(--amber-500);
+    border-radius: var(--r-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+.sidebar-logo-text {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+}
+.sidebar-logo-sub { font-size: 0.6rem; color: var(--sidebar-label); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+
+.sidebar-section-label {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--sidebar-label);
+    padding: 10px 16px 4px;
+}
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    cursor: pointer;
+    transition: var(--t-fast);
+    border-left: 3px solid transparent;
+    text-decoration: none;
+}
+.nav-item:hover  { background: var(--sidebar-bg-hover); }
+.nav-item.active { background: var(--sidebar-bg-active); border-left-color: var(--amber-500); }
+.nav-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; opacity: 0.8; }
+.nav-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--sidebar-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+.nav-item.active .nav-label { color: var(--sidebar-text-active); }
+.nav-item.active .nav-icon  { opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 3 — MAP PINS
+   Teardrop shape, colored by category, emoji icon inside.
+═══════════════════════════════════════════════════════════════ */
+.pin-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
+.pin-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.pin {
+    width: 34px; height: 34px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 2.5px solid white;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    display: flex; align-items: center; justify-content: center;
+}
+.pin span { transform: rotate(45deg); font-size: 14px; display: block; line-height: 1; }
+.pin-label { font-size: var(--text-xs); font-weight: 700; color: var(--neutral-500); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 4 — SERVICE POPUP (map popup)
+   Adapted from Runic.io popup format.
+   Label (muted) | Value (dark) rows, action buttons at bottom.
+═══════════════════════════════════════════════════════════════ */
+.popup {
+    background: white;
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    width: 280px;
+}
+.popup-head {
+    background: var(--panel-header);
+    border-bottom: 1px solid var(--panel-border);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.popup-head-icon {
+    width: 28px; height: 28px;
+    border-radius: var(--r-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.popup-head-name { font-size: var(--text-sm); font-weight: 700; color: var(--neutral-800); line-height: 1.3; flex: 1; }
+.popup-close {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--neutral-100); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; color: var(--neutral-500);
+    flex-shrink: 0;
+}
+.popup-body { padding: 12px 14px; }
+.popup-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--neutral-100);
+    gap: 8px;
+}
+.popup-row:last-child { border-bottom: none; }
+.popup-row-label {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--neutral-400);
+    flex-shrink: 0;
+    padding-top: 1px;
+}
+.popup-row-value {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--neutral-800);
+    text-align: right;
+    line-height: 1.4;
+}
+.popup-row-value.green { color: var(--green-700); }
+.popup-row-value.amber { color: var(--amber-500); }
+.popup-footer {
+    padding: 10px 14px;
+    border-top: 1px solid var(--panel-border);
+    background: var(--panel-header);
+    display: flex;
+    gap: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 5 — SERVICE LIST PANEL (right sidebar)
+   Adapted from Runic.io vehicle list.
+   Status dot + name + category badge per row.
+═══════════════════════════════════════════════════════════════ */
+.list-panel {
+    background: white;
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-md);
+    width: 280px;
+    overflow: hidden;
+    border: 1px solid var(--panel-border);
+}
+.list-panel-head {
+    background: var(--panel-header);
+    padding: 0;
+    border-bottom: 1px solid var(--panel-border);
+}
+.list-tabs { display: flex; }
+.list-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--neutral-400);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: var(--t-fast);
+}
+.list-tab.active { color: var(--green-700); border-bottom-color: var(--green-700); }
+.list-search {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--panel-border);
+}
+.list-search input {
+    width: 100%;
+    padding: 6px 10px 6px 28px;
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--r-full);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    background: var(--neutral-50);
+    color: var(--neutral-700);
+    outline: none;
+}
+.list-body { overflow-y: auto; max-height: 260px; }
+.list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--neutral-100);
+    cursor: pointer;
+    transition: var(--t-fast);
+}
+.list-item:hover  { background: var(--neutral-50); }
+.list-item.active { background: var(--green-50); }
+.list-item:last-child { border-bottom: none; }
+.status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.dot-green { background: var(--status-green); box-shadow: 0 0 0 2px rgba(34,197,94,0.2); }
+.dot-red   { background: var(--status-red);   box-shadow: 0 0 0 2px rgba(239,68,68,0.2); }
+.dot-amber { background: var(--status-amber);  box-shadow: 0 0 0 2px rgba(245,158,11,0.2); }
+.list-item-name {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--neutral-700);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.list-item.active .list-item-name { color: var(--green-700); font-weight: 700; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 6 — FILTER CHIPS
+   Used in the top search bar area.
+═══════════════════════════════════════════════════════════════ */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    border-radius: var(--r-full);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--t-fast);
+    border: 1.5px solid var(--neutral-200);
+    background: white;
+    color: var(--neutral-600);
+    white-space: nowrap;
+}
+.chip:hover  { border-color: var(--green-700); color: var(--green-700); }
+.chip.active { background: var(--green-700); border-color: var(--green-700); color: white; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 7 — BUTTONS
+═══════════════════════════════════════════════════════════════ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 18px;
+    border-radius: var(--r-md);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: var(--text-sm);
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    text-decoration: none;
+    transition: var(--t-base);
+    white-space: nowrap;
+    line-height: 1;
+}
+.btn-primary   { background: var(--green-700); color: white; border-color: var(--green-700); }
+.btn-primary:hover { background: var(--green-600); }
+.btn-outline   { background: transparent; color: var(--green-700); border-color: var(--green-700); }
+.btn-outline:hover { background: var(--green-50); }
+.btn-amber     { background: var(--amber-500); color: white; border-color: var(--amber-500); box-shadow: 0 3px 12px rgba(232,150,58,0.35); }
+.btn-amber:hover { background: var(--amber-600); }
+.btn-ghost     { background: transparent; color: var(--neutral-500); border-color: var(--neutral-200); }
+.btn-ghost:hover { background: var(--neutral-50); }
+.btn-danger    { background: transparent; color: var(--status-red); border-color: #FCA5A5; }
+.btn-danger:hover { background: #FEF2F2; }
+.btn-sm  { padding: 5px 11px; font-size: var(--text-xs); }
+.btn-lg  { padding: 11px 24px; font-size: var(--text-base); border-radius: var(--r-lg); }
+.btn-fab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 20px;
+    border-radius: var(--r-xl);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: var(--text-base);
+    cursor: pointer;
+    border: none;
+    background: var(--amber-500);
+    color: white;
+    box-shadow: 0 4px 16px rgba(232,150,58,0.45);
+    transition: var(--t-base);
+}
+.btn-fab:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(232,150,58,0.5); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 8 — BADGES
+═══════════════════════════════════════════════════════════════ */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--r-full);
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+.badge-food     { background: var(--cat-food-bg);  color: var(--cat-food-text); }
+.badge-shelter  { background: var(--cat-shelt-bg); color: var(--cat-shelt-text); }
+.badge-health   { background: var(--cat-hlth-bg);  color: var(--cat-hlth-text); }
+.badge-gov      { background: var(--cat-gov-bg);   color: var(--cat-gov-text); }
+.badge-financial{ background: var(--cat-fin-bg);   color: var(--cat-fin-text); }
+.badge-approved { background: #D1FAE5; color: #065F46; }
+.badge-pending  { background: #FEF3C7; color: #92400E; }
+.badge-rejected { background: #FEE2E2; color: #991B1B; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 9 — EMERGENCY BANNER
+   Always at top. Never removed or collapsed.
+═══════════════════════════════════════════════════════════════ */
+.banner {
+    background: var(--green-700);
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+    padding: 8px 16px;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+.banner a { color: var(--amber-400); text-decoration: none; font-weight: 800; }
+.banner-divider { color: rgba(255,255,255,0.2); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 10 — SEARCH BAR
+   Sits at top of map area, above the map.
+═══════════════════════════════════════════════════════════════ */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--r-full);
+    padding: 0 14px;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+    height: 38px;
+    max-width: 340px;
+}
+.search-bar svg { color: var(--neutral-400); flex-shrink: 0; }
+.search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--neutral-700);
+    background: transparent;
+    min-width: 0;
+}
+.search-bar input::placeholder { color: var(--neutral-300); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 11 — MAP CONTROLS
+   Icon button cluster, same style as Runic.io toolbar.
+═══════════════════════════════════════════════════════════════ */
+.map-controls { display: flex; flex-direction: column; }
+.map-ctrl-btn {
+    width: 34px; height: 34px;
+    background: white;
+    border: 1px solid var(--neutral-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--neutral-600);
+    transition: var(--t-fast);
+}
+.map-ctrl-btn:first-child { border-radius: var(--r-sm) var(--r-sm) 0 0; }
+.map-ctrl-btn:last-child  { border-radius: 0 0 var(--r-sm) var(--r-sm); border-top: none; }
+.map-ctrl-btn:only-child  { border-radius: var(--r-sm); }
+.map-ctrl-btn:hover { background: var(--neutral-50); color: var(--green-700); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 12 — FORM ELEMENTS
+═══════════════════════════════════════════════════════════════ */
+.form-group { margin-bottom: 14px; }
+.form-label {
+    display: block;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--neutral-500);
+    margin-bottom: 5px;
+}
+.req { color: var(--status-red); margin-left: 2px; }
+.form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1.5px solid var(--neutral-200);
+    border-radius: var(--r-md);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    background: var(--neutral-50);
+    color: var(--neutral-800);
+    outline: none;
+    transition: var(--t-base);
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--green-700);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(27,91,63,0.08);
+}
+.form-input::placeholder { color: var(--neutral-300); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-hint  { font-size: var(--text-xs); color: var(--neutral-400); margin-top: 4px; }
+.form-error { font-size: var(--text-xs); color: var(--status-red); font-weight: 700; margin-top: 4px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 13 — MODAL
+═══════════════════════════════════════════════════════════════ */
+.modal {
+    background: white;
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    max-width: 480px;
+    border: 1px solid var(--neutral-200);
+}
+.modal-head {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--neutral-100);
+}
+.modal-title { font-family: var(--font-display); font-size: var(--text-xl); color: var(--green-700); margin-bottom: 4px; }
+.modal-sub   { font-size: var(--text-sm); color: var(--neutral-500); line-height: 1.55; }
+.modal-body  { padding: 20px 24px; }
+.modal-foot  {
+    padding: 14px 24px;
+    border-top: 1px solid var(--neutral-100);
+    background: var(--neutral-50);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 14 — ALERTS
+═══════════════════════════════════════════════════════════════ */
+.alert {
+    padding: 10px 14px;
+    border-radius: var(--r-md);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+}
+.alert-info    { background: #EFF6FF; color: #1E40AF; border-left: 3px solid #3B82F6; }
+.alert-success { background: #F0FDF4; color: #166534; border-left: 3px solid #22C55E; }
+.alert-warning { background: var(--amber-50); color: #92400E; border-left: 3px solid var(--amber-500); }
+.alert-error   { background: #FEF2F2; color: #991B1B; border-left: 3px solid var(--status-red); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 15 — MOBILE BOTTOM NAV
+   Replaces the dark sidebar on screens under 768px.
+═══════════════════════════════════════════════════════════════ */
+.bottom-nav-demo {
+    background: var(--sidebar-bg);
+    display: flex;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    width: 100%;
+    max-width: 420px;
+}
+.bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 4px;
+    cursor: pointer;
+    transition: var(--t-fast);
+    border-top: 2px solid transparent;
+    gap: 3px;
+}
+.bottom-nav-item.active { border-top-color: var(--amber-500); background: var(--sidebar-bg-active); }
+.bottom-nav-icon { font-size: 1.1rem; }
+.bottom-nav-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--sidebar-text); }
+.bottom-nav-item.active .bottom-nav-label { color: var(--sidebar-text-active); }
+
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <div class="page-header">
+        <h1>Find Help LA — Design System</h1>
+        <p>Source of truth for all visual decisions. Reference: Runic.io map layout adapted for humanitarian use. Dark sidebar, clean panels, utility-first data display — with warmth retained through color and type.</p>
+        <span class="version">v2 — April 2026</span>
+    </div>
+
+    <!-- ══ 1. COLOR PALETTE ══════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Colors <span class="tag">tokens</span></h2>
+
+        <div class="ds-label">Sidebar — Dark Forest Green (not cold navy)</div>
+        <div class="swatch-grid">
+            <div class="swatch"><div class="swatch-color" style="background:#122A1E"></div><div class="swatch-info"><div class="swatch-name">Sidebar BG ★</div><div class="swatch-val">--sidebar-bg</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#1A3D2C"></div><div class="swatch-info"><div class="swatch-name">Sidebar Hover</div><div class="swatch-val">--sidebar-bg-hover</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#1F4A34"></div><div class="swatch-info"><div class="swatch-name">Sidebar Active</div><div class="swatch-val">--sidebar-bg-active</div></div></div>
+        </div>
+
+        <div class="ds-label">Brand Green (interactive elements)</div>
+        <div class="swatch-grid">
+            <div class="swatch"><div class="swatch-color" style="background:#1B5B3F"></div><div class="swatch-info"><div class="swatch-name">Green 700 ★</div><div class="swatch-val">--green-700</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#246B4C"></div><div class="swatch-info"><div class="swatch-name">Green 600</div><div class="swatch-val">--green-600</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#DCF0E7"></div><div class="swatch-info"><div class="swatch-name">Green 100</div><div class="swatch-val">--green-100</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#F0FAF5"></div><div class="swatch-info"><div class="swatch-name">Green 50</div><div class="swatch-val">--green-50</div></div></div>
+        </div>
+
+        <div class="ds-label">Accent Amber (CTAs, active states, logo)</div>
+        <div class="swatch-grid">
+            <div class="swatch"><div class="swatch-color" style="background:#E8963A"></div><div class="swatch-info"><div class="swatch-name">Amber 500 ★</div><div class="swatch-val">--amber-500</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#C97A1E"></div><div class="swatch-info"><div class="swatch-name">Amber 600</div><div class="swatch-val">--amber-600</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#FDF0E0"></div><div class="swatch-info"><div class="swatch-name">Amber 100</div><div class="swatch-val">--amber-100</div></div></div>
+        </div>
+
+        <div class="ds-label">Status Colors</div>
+        <div class="swatch-grid">
+            <div class="swatch"><div class="swatch-color" style="background:#22C55E"></div><div class="swatch-info"><div class="swatch-name">Open/Verified</div><div class="swatch-val">--status-green</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#EF4444"></div><div class="swatch-info"><div class="swatch-name">Closed/Error</div><div class="swatch-val">--status-red</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#F59E0B"></div><div class="swatch-info"><div class="swatch-name">Pending</div><div class="swatch-val">--status-amber</div></div></div>
+        </div>
+
+        <div class="ds-label">Category Colors — Pin / Badge</div>
+        <div class="swatch-grid">
+            <div class="swatch"><div class="swatch-color" style="background:#F59E0B"></div><div class="swatch-info"><div class="swatch-name">Food Pin</div><div class="swatch-val">--cat-food-pin</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#3B82F6"></div><div class="swatch-info"><div class="swatch-name">Shelter Pin</div><div class="swatch-val">--cat-shelt-pin</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#EC4899"></div><div class="swatch-info"><div class="swatch-name">Health Pin</div><div class="swatch-val">--cat-hlth-pin</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#8B5CF6"></div><div class="swatch-info"><div class="swatch-name">Gov't Pin</div><div class="swatch-val">--cat-gov-pin</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#10B981"></div><div class="swatch-info"><div class="swatch-name">Financial Pin</div><div class="swatch-val">--cat-fin-pin</div></div></div>
+        </div>
+    </section>
+
+    <!-- ══ 2. SIDEBAR NAV ════════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Sidebar Navigation <span class="tag">layout</span></h2>
+        <p style="font-size:var(--text-sm);color:var(--neutral-500);margin-bottom:16px">Dark forest green, icon + label. Desktop: 72px collapsed / 220px expanded. Mobile: replaced by bottom tab bar (see Section 15). Active item has amber left border.</p>
+        <div class="demo-box" style="background:#E8EAED; padding:32px; display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start">
+            <div class="sidebar-demo">
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-mark">📍</div>
+                    <div>
+                        <div class="sidebar-logo-text">Find Help LA</div>
+                        <div class="sidebar-logo-sub">Free Resources</div>
+                    </div>
+                </div>
+                <div class="nav-item active">
+                    <span class="nav-icon">🗺️</span>
+                    <span class="nav-label">Map</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">🍎</span>
+                    <span class="nav-label">Food</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Shelter</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">🏥</span>
+                    <span class="nav-label">Healthcare</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">🏛️</span>
+                    <span class="nav-label">Gov't Services</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">💼</span>
+                    <span class="nav-label">Financial</span>
+                </div>
+                <div class="sidebar-section-label" style="margin-top:8px">Info</div>
+                <div class="nav-item">
+                    <span class="nav-icon">💛</span>
+                    <span class="nav-label">Donate</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">➕</span>
+                    <span class="nav-label">Suggest a Place</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ 3. MAP PINS ═══════════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Map Pins <span class="tag">map</span></h2>
+        <div class="demo-box" style="background:#E8EAED">
+            <div class="pin-row">
+                <div class="pin-wrap">
+                    <div class="pin" style="background:var(--cat-food-pin)"><span>🍎</span></div>
+                    <div class="pin-label">Food</div>
+                </div>
+                <div class="pin-wrap">
+                    <div class="pin" style="background:var(--cat-shelt-pin)"><span>🏠</span></div>
+                    <div class="pin-label">Shelter</div>
+                </div>
+                <div class="pin-wrap">
+                    <div class="pin" style="background:var(--cat-hlth-pin)"><span>🏥</span></div>
+                    <div class="pin-label">Health</div>
+                </div>
+                <div class="pin-wrap">
+                    <div class="pin" style="background:var(--cat-gov-pin)"><span>🏛️</span></div>
+                    <div class="pin-label">Gov't</div>
+                </div>
+                <div class="pin-wrap">
+                    <div class="pin" style="background:var(--cat-fin-pin)"><span>💼</span></div>
+                    <div class="pin-label">Financial</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ 4. MAP POPUP ══════════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Map Popup <span class="tag">map</span></h2>
+        <p style="font-size:var(--text-sm);color:var(--neutral-500);margin-bottom:16px">Adapted from Runic.io popup. Label/value rows replace the coordinate display. Category badge in header replaces vehicle type.</p>
+        <div class="demo-box" style="background:#E8EAED; padding:32px; display:flex; gap:20px; flex-wrap:wrap">
+            <div class="popup">
+                <div class="popup-head">
+                    <div class="popup-head-icon" style="background:var(--cat-food-bg)">🍎</div>
+                    <div class="popup-head-name">Midnight Mission — Free Meals</div>
+                    <button class="popup-close">✕</button>
+                </div>
+                <div class="popup-body">
+                    <div class="popup-row">
+                        <span class="popup-row-label">Address</span>
+                        <span class="popup-row-value">601 S San Pedro St<br>Los Angeles, CA 90014</span>
+                    </div>
+                    <div class="popup-row">
+                        <span class="popup-row-label">Phone</span>
+                        <span class="popup-row-value green">(213) 624-9258</span>
+                    </div>
+                    <div class="popup-row">
+                        <span class="popup-row-label">Hours</span>
+                        <span class="popup-row-value">365 days/year<br>3 meals daily</span>
+                    </div>
+                    <div class="popup-row">
+                        <span class="popup-row-label">Category</span>
+                        <span class="popup-row-value"><span class="badge badge-food">Food</span></span>
+                    </div>
+                </div>
+                <div class="popup-footer">
+                    <button class="btn btn-primary btn-sm">📍 Directions</button>
+                    <button class="btn btn-outline btn-sm">🌐 Website</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ 5. SERVICE LIST PANEL ═════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Service List Panel <span class="tag">layout</span></h2>
+        <p style="font-size:var(--text-sm);color:var(--neutral-500);margin-bottom:16px">Adapted from Runic.io vehicle list. Status dot shows open/closed state. Click a row to fly the map to that pin.</p>
+        <div class="demo-box">
+            <div class="list-panel">
+                <div class="list-panel-head">
+                    <div class="list-tabs">
+                        <div class="list-tab active">By Category</div>
+                        <div class="list-tab">Nearest First</div>
+                    </div>
+                    <div class="list-search">
+                        <input type="text" placeholder="Search services…">
+                    </div>
+                </div>
+                <div class="list-body">
+                    <div class="list-item active">
+                        <div class="status-dot dot-green"></div>
+                        <span class="list-item-name">Midnight Mission — Meals</span>
+                        <span class="badge badge-food">Food</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="status-dot dot-green"></div>
+                        <span class="list-item-name">LA Regional Food Bank</span>
+                        <span class="badge badge-food">Food</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="status-dot dot-red"></div>
+                        <span class="list-item-name">St. Francis Center</span>
+                        <span class="badge badge-food">Food</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="status-dot dot-green"></div>
+                        <span class="list-item-name">Union Rescue Mission</span>
+                        <span class="badge badge-shelter">Shelter</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="status-dot dot-amber"></div>
+                        <span class="list-item-name">Venice Family Clinic</span>
+                        <span class="badge badge-health">Health</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="status-dot dot-green"></div>
+                        <span class="list-item-name">DPSS East LA</span>
+                        <span class="badge badge-gov">Gov't</span>
+                    </div>
+                    <div class="list-item">
+                        <div class="status-dot dot-green"></div>
+                        <span class="list-item-name">Chrysalis</span>
+                        <span class="badge badge-financial">Financial</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ 6. FILTER CHIPS ══════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Filter Chips <span class="tag">controls</span></h2>
+        <div class="demo-box">
+            <div class="ds-row">
+                <button class="chip active">All</button>
+                <button class="chip">🍎 Food</button>
+                <button class="chip">🏠 Shelter</button>
+                <button class="chip">🏥 Healthcare</button>
+                <button class="chip">🏛️ Gov't</button>
+                <button class="chip">💼 Financial</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ 7. BUTTONS ════════════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Buttons <span class="tag">controls</span></h2>
+        <div class="demo-box">
+            <div class="ds-label">Primary Actions</div>
+            <div class="ds-row">
+                <button class="btn btn-primary btn-lg">Get Directions</button>
+                <button class="btn btn-primary">Get Directions</button>
+                <button class="btn btn-primary btn-sm">Directions</button>
+            </div>
+            <div class="ds-label">Secondary / Outline</div>
+            <div class="ds-row">
+                <button class="btn btn-outline">Visit Website</button>
+                <button class="btn btn-ghost">Cancel</button>
+                <button class="btn btn-danger btn-sm">Reject</button>
+            </div>
+            <div class="ds-label">Floating Action Button (Suggest a Place)</div>
+            <div class="ds-row">
+                <button class="btn-fab">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg>
+                    Suggest a Place
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ 8. BADGES ═════════════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Badges <span class="tag">data</span></h2>
+        <div class="demo-box">
+            <div class="ds-label">Category</div>
+            <div class="ds-row">
+                <span class="badge badge-food">Food</span>
+                <span class="badge badge-shelter">Shelter</span>
+                <span class="badge badge-health">Healthcare</span>
+                <span class="badge badge-gov">Gov't Services</span>
+                <span class="badge badge-financial">Financial</span>
+            </div>
+            <div class="ds-label">Status (admin review dashboard)</div>
+            <div class="ds-row">
+                <span class="badge badge-approved">Approved</span>
+                <span class="badge badge-pending">Pending</span>
+                <span class="badge badge-rejected">Rejected</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ 9. EMERGENCY BANNER ═══════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Emergency Banner <span class="tag">always visible</span></h2>
+        <p style="font-size:var(--text-sm);color:var(--neutral-500);margin-bottom:12px">Pinned to the top of every page. Never hidden. The two hotlines are always reachable no matter what fails.</p>
+        <div class="banner">
+            <span>Need help right now? Call <a href="#">2-1-1</a> — free, 24/7, all LA County services</span>
+            <span class="banner-divider">|</span>
+            <span><a href="#">9-8-8</a> for mental health crisis</span>
+        </div>
+    </section>
+
+    <!-- ══ 10. SEARCH BAR ════════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Search Bar <span class="tag">controls</span></h2>
+        <div class="demo-box" style="background:#E8EAED; padding:24px">
+            <div class="search-bar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <input type="text" placeholder="Search food, shelter, clinics, CalFresh…">
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ 11. MAP CONTROLS ══════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Map Controls <span class="tag">map</span></h2>
+        <div class="demo-box" style="background:#E8EAED; padding:24px; display:flex; gap:16px">
+            <div class="map-controls">
+                <button class="map-ctrl-btn">＋</button>
+                <button class="map-ctrl-btn">－</button>
+            </div>
+            <div class="map-controls">
+                <button class="map-ctrl-btn">⊞</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ 12. FORM ELEMENTS ═════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Form Elements <span class="tag">controls</span></h2>
+        <div class="demo-box" style="max-width:420px">
+            <div class="form-group">
+                <label class="form-label">Organization Name <span class="req">*</span></label>
+                <input class="form-input" type="text" placeholder="e.g. First Baptist Church Food Pantry">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Category <span class="req">*</span></label>
+                <select class="form-select">
+                    <option>Select a category…</option>
+                    <option>Food Bank / Pantry / Free Meals</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <textarea class="form-textarea" placeholder="What services do they offer?"></textarea>
+                <div class="form-hint">Optional — helps us write a better description</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone (error state)</label>
+                <input class="form-input" type="text" value="555-NOPE" style="border-color:var(--status-red)">
+                <div class="form-error">Please enter a valid phone number</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ 13. MODAL ═════════════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Modal <span class="tag">overlay</span></h2>
+        <div class="demo-box" style="background:#E8EAED; padding:32px">
+            <div class="modal">
+                <div class="modal-head">
+                    <div class="modal-title">Suggest a Place</div>
+                    <p class="modal-sub">Know a resource that isn't here? Help your neighbors find it. We review all submissions before publishing.</p>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Organization Name <span class="req">*</span></label>
+                        <input class="form-input" placeholder="e.g. First Baptist Church Food Pantry">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category <span class="req">*</span></label>
+                        <select class="form-select"><option>Select…</option></select>
+                    </div>
+                </div>
+                <div class="modal-foot">
+                    <button class="btn btn-ghost btn-sm">Cancel</button>
+                    <button class="btn btn-primary btn-sm">Submit</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ 14. ALERTS ════════════════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Alerts <span class="tag">feedback</span></h2>
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:480px">
+            <div class="alert alert-success">✅ Your suggestion has been received and will be reviewed.</div>
+            <div class="alert alert-warning">⚠️ This listing was last verified 90+ days ago. Hours may have changed.</div>
+            <div class="alert alert-error">❌ Could not load services. Check your connection and try again. You can always call 2-1-1.</div>
+            <div class="alert alert-info">ℹ️ Showing 5 services within 2 miles of 90013.</div>
+        </div>
+    </section>
+
+    <!-- ══ 15. MOBILE BOTTOM NAV ═════════════════════════════ -->
+    <section class="section">
+        <h2 class="section-title">Mobile Bottom Navigation <span class="tag">mobile only</span></h2>
+        <p style="font-size:var(--text-sm);color:var(--neutral-500);margin-bottom:16px">Replaces the dark sidebar on screens under 768px. Same dark forest green, amber active state. Max 5 items.</p>
+        <div class="bottom-nav-demo">
+            <div class="bottom-nav-item active">
+                <span class="bottom-nav-icon">🗺️</span>
+                <span class="bottom-nav-label">Map</span>
+            </div>
+            <div class="bottom-nav-item">
+                <span class="bottom-nav-icon">🔍</span>
+                <span class="bottom-nav-label">Search</span>
+            </div>
+            <div class="bottom-nav-item">
+                <span class="bottom-nav-icon">➕</span>
+                <span class="bottom-nav-label">Suggest</span>
+            </div>
+            <div class="bottom-nav-item">
+                <span class="bottom-nav-icon">💛</span>
+                <span class="bottom-nav-label">Donate</span>
+            </div>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

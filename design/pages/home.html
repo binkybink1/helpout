@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Help LA — Home Page Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+
+/* ═══════════════════════════════════════════════════════
+   DESIGN PAGE CHROME
+   The outer wrapper is just for presenting the design.
+   The actual app starts at .app-frame.
+═══════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: #E2E8F0;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+}
+
+.design-page-header {
+    max-width: 1100px;
+    margin: 0 auto 28px;
+}
+.design-page-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #94A3B8;
+    margin-bottom: 4px;
+}
+.design-page-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #1E293B;
+    font-weight: 700;
+}
+.design-page-sub {
+    font-size: 0.8rem;
+    color: #94A3B8;
+    margin-top: 4px;
+}
+
+/* ── LAYOUT LABEL ─────────────────────────────────── */
+.layout-label {
+    max-width: 1100px;
+    margin: 0 auto 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94A3B8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.layout-label::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #CBD5E1;
+}
+
+/* ── APP FRAME ────────────────────────────────────── */
+.app-frame {
+    max-width: 1100px;
+    margin: 0 auto 48px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    background: white;
+    display: flex;
+    flex-direction: column;
+    height: 640px;
+}
+
+/* ═══════════════════════════════════════════════════
+   DESIGN TOKENS — v2
+═══════════════════════════════════════════════════ */
+:root {
+    --green-900:  #0A1F13;
+    --green-800:  #122A1E;
+    --green-700:  #1B5B3F;
+    --green-600:  #246B4C;
+    --green-500:  #2E8A60;
+    --green-100:  #DCF0E7;
+    --green-50:   #F0FAF5;
+
+    --amber-600:  #C97A1E;
+    --amber-500:  #E8963A;
+    --amber-400:  #F0AA5A;
+    --amber-100:  #FDF0E0;
+
+    --status-green:  #22C55E;
+    --status-red:    #EF4444;
+    --status-amber:  #F59E0B;
+
+    --neutral-900: #111827;
+    --neutral-800: #1F2937;
+    --neutral-700: #374151;
+    --neutral-600: #4B5563;
+    --neutral-500: #6B7280;
+    --neutral-400: #9CA3AF;
+    --neutral-300: #D1D5DB;
+    --neutral-200: #E5E7EB;
+    --neutral-100: #F3F4F6;
+    --neutral-50:  #F9FAFB;
+    --white:       #FFFFFF;
+
+    --cat-food-pin: #F59E0B;  --cat-food-bg: #FEF3C7;  --cat-food-text: #92400E;
+    --cat-shelt-pin:#3B82F6;  --cat-shelt-bg:#DBEAFE;  --cat-shelt-text:#1E40AF;
+    --cat-hlth-pin: #EC4899;  --cat-hlth-bg: #FCE7F3;  --cat-hlth-text: #9D174D;
+    --cat-gov-pin:  #8B5CF6;  --cat-gov-bg:  #EDE9FE;  --cat-gov-text:  #5B21B6;
+    --cat-fin-pin:  #10B981;  --cat-fin-bg:  #D1FAE5;  --cat-fin-text:  #065F46;
+
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body:    'DM Sans', 'Segoe UI', system-ui, sans-serif;
+
+    --text-2xs: 0.68rem;
+    --text-xs:  0.75rem;
+    --text-sm:  0.8125rem;
+    --text-base:0.875rem;
+    --text-md:  1rem;
+    --text-lg:  1.125rem;
+
+    --r-sm:   4px;
+    --r-md:   8px;
+    --r-lg:   12px;
+    --r-xl:   18px;
+    --r-full: 9999px;
+
+    --shadow-xs: 0 1px 3px rgba(0,0,0,0.07);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 28px rgba(0,0,0,0.14);
+    --shadow-xl: 0 16px 48px rgba(0,0,0,0.18);
+}
+
+/* ═══════════════════════════════════════════════════
+   EMERGENCY BANNER
+═══════════════════════════════════════════════════ */
+.banner {
+    background: var(--green-700);
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+    padding: 7px 16px;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-shrink: 0;
+}
+.banner a { color: var(--amber-400); font-weight: 800; text-decoration: none; }
+.banner-divider { color: rgba(255,255,255,0.2); }
+
+/* ═══════════════════════════════════════════════════
+   TOP BAR
+═══════════════════════════════════════════════════ */
+.topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--neutral-200);
+    padding: 9px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow-xs);
+    flex-shrink: 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+.logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--amber-500);
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+.logo-text { display: flex; flex-direction: column; line-height: 1; }
+.logo-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--green-700);
+    font-weight: 700;
+}
+.logo-sub {
+    font-size: var(--text-2xs);
+    color: var(--neutral-400);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+}
+
+.topbar-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--neutral-200);
+    flex-shrink: 0;
+}
+
+/* Search */
+.search-bar {
+    flex: 1;
+    max-width: 380px;
+    display: flex;
+    align-items: center;
+    background: var(--neutral-50);
+    border: 1.5px solid var(--neutral-200);
+    border-radius: var(--r-full);
+    padding: 0 14px;
+    gap: 8px;
+    height: 36px;
+    transition: all 0.18s;
+}
+.search-bar svg { color: var(--neutral-400); flex-shrink: 0; }
+.search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--neutral-700);
+    background: transparent;
+    min-width: 0;
+}
+.search-bar input::placeholder { color: var(--neutral-300); }
+
+/* Filter chips */
+.chips {
+    display: flex;
+    gap: 5px;
+}
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 11px;
+    border-radius: var(--r-full);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    border: 1.5px solid var(--neutral-200);
+    background: var(--white);
+    color: var(--neutral-600);
+    white-space: nowrap;
+    cursor: pointer;
+}
+.chip.active { background: var(--green-700); border-color: var(--green-700); color: white; }
+
+.location-note {
+    font-size: var(--text-xs);
+    color: var(--neutral-400);
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   MAIN BODY
+═══════════════════════════════════════════════════ */
+.app-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════
+   SERVICE LIST PANEL
+═══════════════════════════════════════════════════ */
+.list-panel {
+    width: 340px;
+    min-width: 280px;
+    background: var(--white);
+    border-right: 1px solid var(--neutral-200);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.panel-head {
+    background: var(--neutral-50);
+    border-bottom: 1px solid var(--neutral-200);
+    flex-shrink: 0;
+}
+.panel-tabs { display: flex; padding: 0 4px; }
+.panel-tab {
+    flex: 1;
+    padding: 10px 8px;
+    text-align: center;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--neutral-400);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: var(--font-body);
+}
+.panel-tab.active { color: var(--green-700); border-bottom-color: var(--green-700); }
+
+.panel-search {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--neutral-200);
+    position: relative;
+    flex-shrink: 0;
+}
+.panel-search svg {
+    position: absolute;
+    left: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--neutral-400);
+}
+.panel-search input {
+    width: 100%;
+    height: 30px;
+    padding: 0 10px 0 26px;
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--r-full);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    background: var(--neutral-50);
+    color: var(--neutral-700);
+    outline: none;
+}
+.panel-search input::placeholder { color: var(--neutral-300); }
+
+.result-count {
+    padding: 6px 14px 2px;
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--neutral-400);
+    flex-shrink: 0;
+}
+
+.panel-body { flex: 1; overflow-y: auto; padding: 4px 0; }
+.panel-body::-webkit-scrollbar { width: 4px; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--neutral-200); border-radius: 2px; }
+
+/* List items */
+.list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--neutral-100);
+    cursor: pointer;
+}
+.list-item:hover { background: var(--neutral-50); }
+.list-item.active { background: var(--green-50); }
+.list-item:last-child { border-bottom: none; }
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+.dot-green { background: var(--status-green); box-shadow: 0 0 0 2px rgba(34,197,94,0.2); }
+.dot-amber { background: var(--status-amber); box-shadow: 0 0 0 2px rgba(245,158,11,0.2); }
+.dot-red   { background: var(--status-red);   box-shadow: 0 0 0 2px rgba(239,68,68,0.2); }
+
+.item-content { flex: 1; min-width: 0; }
+.item-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 3px;
+}
+.item-name {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--neutral-800);
+    line-height: 1.35;
+    flex: 1;
+}
+.list-item.active .item-name { color: var(--green-700); font-weight: 700; }
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-radius: var(--r-full);
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.badge-food     { background: var(--cat-food-bg);  color: var(--cat-food-text); }
+.badge-shelter  { background: var(--cat-shelt-bg); color: var(--cat-shelt-text); }
+.badge-health   { background: var(--cat-hlth-bg);  color: var(--cat-hlth-text); }
+.badge-government { background: var(--cat-gov-bg); color: var(--cat-gov-text); }
+.badge-financial{ background: var(--cat-fin-bg);   color: var(--cat-fin-text); }
+
+.item-meta {
+    font-size: var(--text-2xs);
+    color: var(--neutral-400);
+    line-height: 1.4;
+    margin-top: 2px;
+}
+.item-phone {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--green-700);
+    margin-top: 4px;
+}
+.item-actions {
+    display: flex;
+    gap: 5px;
+    margin-top: 7px;
+}
+.btn-xs {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 10px;
+    border-radius: var(--r-full);
+    font-family: var(--font-body);
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    text-decoration: none;
+}
+.btn-xs-primary { background: var(--green-700); color: white; }
+.btn-xs-outline { background: var(--green-50); color: var(--green-700); }
+
+/* ═══════════════════════════════════════════════════
+   MAP AREA (placeholder — Leaflet renders here in app)
+═══════════════════════════════════════════════════ */
+.map-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #EEF0F3;
+}
+
+/* Placeholder map tiles */
+.map-placeholder {
+    width: 100%;
+    height: 100%;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 40px,
+            rgba(255,255,255,0.15) 40px,
+            rgba(255,255,255,0.15) 41px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 40px,
+            rgba(255,255,255,0.15) 40px,
+            rgba(255,255,255,0.15) 41px
+        ),
+        linear-gradient(135deg, #D8E4DD 0%, #C8D8D0 50%, #BDCFC5 100%);
+    position: relative;
+}
+
+/* Roads */
+.map-road {
+    position: absolute;
+    background: rgba(255,255,255,0.65);
+}
+.road-h { height: 3px; left: 0; right: 0; }
+.road-v { width: 3px; top: 0; bottom: 0; }
+.road-h-wide { height: 6px; left: 0; right: 0; background: rgba(255,255,255,0.8); }
+.road-v-wide { width: 6px; top: 0; bottom: 0; background: rgba(255,255,255,0.8); }
+
+/* Map blocks (buildings/parks) */
+.map-block {
+    position: absolute;
+    border-radius: 3px;
+}
+
+/* Map label */
+.map-attribution {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 10px;
+    color: rgba(0,0,0,0.4);
+    background: rgba(255,255,255,0.8);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+/* Map pins */
+.map-pin {
+    position: absolute;
+    transform: translate(-50%, -100%);
+}
+.pin-shape {
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 2.5px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pin-icon {
+    transform: rotate(45deg);
+    font-size: 12px;
+    line-height: 1;
+}
+
+/* Active popup (showing for selected pin) */
+.map-popup {
+    position: absolute;
+    z-index: 10;
+    transform: translate(-50%, calc(-100% - 36px));
+}
+.popup {
+    background: white;
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    width: 264px;
+}
+.popup-head {
+    background: var(--neutral-50);
+    border-bottom: 1px solid var(--neutral-200);
+    padding: 10px 13px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+.popup-head-icon {
+    width: 28px; height: 28px;
+    border-radius: var(--r-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.popup-head-text { flex: 1; }
+.popup-head-name {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--neutral-800);
+    line-height: 1.3;
+}
+.popup-head-cat {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+}
+.popup-body { padding: 10px 13px; }
+.popup-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--neutral-100);
+    gap: 10px;
+}
+.popup-row:last-child { border-bottom: none; }
+.popup-row-label {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--neutral-400);
+    flex-shrink: 0;
+    padding-top: 1px;
+}
+.popup-row-value {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--neutral-800);
+    text-align: right;
+    line-height: 1.4;
+}
+.popup-row-value.green { color: var(--green-700); }
+.popup-footer {
+    padding: 9px 13px;
+    border-top: 1px solid var(--neutral-200);
+    background: var(--neutral-50);
+    display: flex;
+    gap: 6px;
+}
+.popup-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    border-radius: var(--r-md);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-decoration: none;
+}
+.popup-btn-primary { background: var(--green-700); color: white; }
+.popup-btn-secondary { background: var(--neutral-100); color: var(--neutral-700); }
+
+/* Leaflet zoom controls (visual placeholder) */
+.map-zoom {
+    position: absolute;
+    bottom: 20px;
+    left: 12px;
+    display: flex;
+    flex-direction: column;
+}
+.zoom-btn {
+    width: 32px;
+    height: 32px;
+    background: white;
+    border: 1px solid var(--neutral-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--neutral-600);
+    box-shadow: var(--shadow-xs);
+    cursor: pointer;
+}
+.zoom-btn:first-child { border-radius: 4px 4px 0 0; }
+.zoom-btn:last-child  { border-radius: 0 0 4px 4px; border-top: none; }
+
+/* FAB */
+.fab {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 18px;
+    border-radius: var(--r-xl);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: var(--text-sm);
+    border: none;
+    background: var(--amber-500);
+    color: white;
+    box-shadow: 0 4px 16px rgba(232,150,58,0.45);
+    cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════
+   MOBILE FRAME
+═══════════════════════════════════════════════════ */
+.mobile-frame {
+    max-width: 390px;
+    margin: 0 auto;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.22),
+                0 0 0 1px rgba(0,0,0,0.08);
+    height: 844px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Mobile status bar */
+.mobile-status-bar {
+    background: var(--green-700);
+    padding: 12px 24px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+.mobile-time { font-size: 0.85rem; font-weight: 700; color: white; }
+.mobile-icons { display: flex; gap: 5px; align-items: center; }
+.mobile-icon { font-size: 0.75rem; color: rgba(255,255,255,0.9); }
+
+/* Mobile banner (merged with status bar look) */
+.mobile-banner {
+    background: var(--green-700);
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+    padding: 5px 16px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+.mobile-banner a { color: var(--amber-400); font-weight: 800; text-decoration: none; }
+
+/* Mobile topbar */
+.mobile-topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--neutral-200);
+    padding: 9px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.mobile-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.mobile-logo-mark {
+    width: 28px;
+    height: 28px;
+    background: var(--amber-500);
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+}
+.mobile-logo-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    color: var(--green-700);
+    font-weight: 700;
+}
+.mobile-search {
+    flex: 1;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    background: var(--neutral-100);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--r-full);
+    padding: 0 12px;
+    gap: 6px;
+}
+.mobile-search svg { color: var(--neutral-400); }
+.mobile-search-text { font-size: 0.75rem; color: var(--neutral-300); }
+
+/* Mobile map */
+.mobile-map {
+    height: 230px;
+    background:
+        linear-gradient(135deg, #D8E4DD 0%, #C8D8D0 100%);
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.mobile-map-road-h {
+    position: absolute;
+    height: 3px;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.65);
+}
+.mobile-map-road-v {
+    position: absolute;
+    width: 3px;
+    top: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.65);
+}
+.mobile-map-road-h-wide {
+    position: absolute;
+    height: 5px;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.8);
+}
+.mobile-map-road-v-wide {
+    position: absolute;
+    width: 5px;
+    top: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.8);
+}
+.mobile-pin {
+    position: absolute;
+    transform: translate(-50%, -100%);
+}
+.mobile-pin-shape {
+    width: 26px;
+    height: 26px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mobile-pin-icon { transform: rotate(45deg); font-size: 10px; line-height: 1; }
+
+/* Mobile cat bar */
+.mobile-cats {
+    display: flex;
+    overflow-x: auto;
+    padding: 8px 10px;
+    gap: 6px;
+    background: var(--white);
+    border-top: 1px solid var(--neutral-200);
+    scrollbar-width: none;
+    flex-shrink: 0;
+}
+.mobile-cats::-webkit-scrollbar { display: none; }
+.mobile-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 5px 10px;
+    border-radius: var(--r-full);
+    font-size: 0.72rem;
+    font-weight: 600;
+    border: 1.5px solid var(--neutral-200);
+    background: var(--white);
+    color: var(--neutral-600);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.mobile-chip.active { background: var(--green-700); border-color: var(--green-700); color: white; }
+
+/* Mobile list */
+.mobile-list {
+    flex: 1;
+    overflow-y: auto;
+}
+.mobile-list::-webkit-scrollbar { display: none; }
+.mobile-list-header {
+    padding: 8px 14px 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--neutral-400);
+}
+.mobile-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--neutral-100);
+}
+.mobile-list-item.active { background: var(--green-50); }
+.mobile-list-content { flex: 1; }
+.mobile-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 3px;
+}
+.mobile-item-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--neutral-800);
+    line-height: 1.35;
+    flex: 1;
+}
+.mobile-item-meta {
+    font-size: 0.68rem;
+    color: var(--neutral-400);
+    line-height: 1.4;
+    margin-top: 2px;
+}
+.mobile-item-phone {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--green-700);
+    margin-top: 4px;
+}
+
+/* Mobile bottom tab bar */
+.mobile-tabs {
+    background: var(--white);
+    border-top: 1px solid var(--neutral-200);
+    display: flex;
+    flex-shrink: 0;
+    padding-bottom: 16px; /* safe area */
+}
+.mobile-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 8px 6px;
+    gap: 3px;
+    cursor: pointer;
+}
+.mobile-tab-icon { font-size: 1.2rem; }
+.mobile-tab-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--neutral-400);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.mobile-tab.active .mobile-tab-label { color: var(--green-700); }
+.mobile-tab.active .mobile-tab-icon { filter: none; }
+
+/* ── ANNOTATION BUBBLES ──────────────────────────── */
+.annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    max-width: 220px;
+}
+.annotation-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #60A5FA;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+.annotation-text {
+    font-size: 0.72rem;
+    color: #64748B;
+    line-height: 1.5;
+}
+.annotation-text strong { color: #1E293B; font-weight: 700; }
+
+/* ── SIDE-BY-SIDE LAYOUT ───────────────────────────── */
+.comparison {
+    max-width: 1100px;
+    margin: 0 auto 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+}
+.comparison-col-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94A3B8;
+    margin-bottom: 16px;
+}
+
+/* ── EMPTY STATE DETAIL ─────────────────────────────── */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 36px 20px;
+    text-align: center;
+    gap: 6px;
+}
+.empty-icon { font-size: 2rem; margin-bottom: 4px; }
+.empty-title { font-size: 0.8rem; font-weight: 700; color: var(--neutral-500); }
+.empty-msg { font-size: 0.72rem; color: var(--neutral-400); line-height: 1.5; max-width: 200px; }
+.empty-link { font-size: 0.72rem; font-weight: 700; color: var(--green-700); text-decoration: none; margin-top: 6px; }
+
+    </style>
+</head>
+<body>
+
+<!-- DESIGN PAGE HEADER -->
+<div class="design-page-header">
+    <div class="design-page-title">Find Help LA — Design Exploration</div>
+    <div class="design-page-name">Home / Map Page</div>
+    <div class="design-page-sub">v2 design direction &nbsp;&middot;&nbsp; DM Sans + Playfair Display &nbsp;&middot;&nbsp; April 2026</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     DESKTOP LAYOUT
+═══════════════════════════════════════════════════ -->
+<div class="layout-label">Desktop — 1100px</div>
+
+<div class="app-frame">
+
+    <!-- EMERGENCY BANNER -->
+    <div class="banner">
+        Need help right now? Call <a href="#">2-1-1</a> &mdash; free, 24/7, all LA County services
+        <span class="banner-divider">|</span>
+        Mental health crisis: <a href="#">9-8-8</a>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <a class="logo" href="#">
+            <div class="logo-mark">🗺</div>
+            <div class="logo-text">
+                <span class="logo-name">Find Help LA</span>
+                <span class="logo-sub">Los Angeles County</span>
+            </div>
+        </a>
+
+        <div class="topbar-divider"></div>
+
+        <div class="search-bar">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <input type="text" placeholder="Search food, shelter, clinics, CalFresh…" readonly>
+        </div>
+
+        <div class="chips">
+            <button class="chip active">All</button>
+            <button class="chip">🍎 Food</button>
+            <button class="chip">🏠 Shelter</button>
+            <button class="chip">🏥 Healthcare</button>
+            <button class="chip">🏛 Gov't</button>
+            <button class="chip">💼 Financial</button>
+        </div>
+
+        <span class="location-note">LA County</span>
+    </div>
+
+    <!-- APP BODY -->
+    <div class="app-body">
+
+        <!-- SERVICE LIST PANEL -->
+        <div class="list-panel">
+            <div class="panel-head">
+                <div class="panel-tabs">
+                    <button class="panel-tab active">By Category</button>
+                    <button class="panel-tab">Nearest First</button>
+                </div>
+            </div>
+            <div class="panel-search">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="position:absolute;left:22px;top:50%;transform:translateY(-50%);color:#9CA3AF">
+                    <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <input type="text" placeholder="Filter this list…" readonly>
+            </div>
+            <div class="result-count">23 resources</div>
+            <div class="panel-body">
+
+                <!-- Item: active/selected -->
+                <div class="list-item active">
+                    <div class="status-dot dot-green"></div>
+                    <div class="item-content">
+                        <div class="item-top">
+                            <div class="item-name">Los Angeles Regional Food Bank</div>
+                            <span class="badge badge-food">Food</span>
+                        </div>
+                        <div class="item-meta">📍 1734 E 41st St, Los Angeles</div>
+                        <div class="item-meta">🕐 Mon–Fri 8am–4pm</div>
+                        <div class="item-phone">📞 (323) 234-3030</div>
+                        <div class="item-actions">
+                            <a class="btn-xs btn-xs-primary" href="#">Directions</a>
+                            <a class="btn-xs btn-xs-outline" href="#">Website</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item: normal -->
+                <div class="list-item">
+                    <div class="status-dot dot-green"></div>
+                    <div class="item-content">
+                        <div class="item-top">
+                            <div class="item-name">Midnight Mission — Free Meals</div>
+                            <span class="badge badge-food">Food</span>
+                        </div>
+                        <div class="item-meta">📍 601 S San Pedro St, Los Angeles</div>
+                        <div class="item-meta">🕐 365 days/year</div>
+                        <div class="item-phone">📞 (213) 624-9258</div>
+                        <div class="item-actions">
+                            <a class="btn-xs btn-xs-primary" href="#">Directions</a>
+                            <a class="btn-xs btn-xs-outline" href="#">Website</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="status-dot dot-green"></div>
+                    <div class="item-content">
+                        <div class="item-top">
+                            <div class="item-name">Union Rescue Mission — Emergency Shelter</div>
+                            <span class="badge badge-shelter">Shelter</span>
+                        </div>
+                        <div class="item-meta">📍 545 S San Pedro St, Los Angeles</div>
+                        <div class="item-meta">🕐 Open 24/7 — call ahead</div>
+                        <div class="item-phone">📞 (213) 347-6300</div>
+                        <div class="item-actions">
+                            <a class="btn-xs btn-xs-primary" href="#">Directions</a>
+                            <a class="btn-xs btn-xs-outline" href="#">Website</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="status-dot dot-green"></div>
+                    <div class="item-content">
+                        <div class="item-top">
+                            <div class="item-name">Venice Family Clinic</div>
+                            <span class="badge badge-health">Healthcare</span>
+                        </div>
+                        <div class="item-meta">📍 604 Rose Ave, Venice</div>
+                        <div class="item-meta">🕐 Mon–Fri 8am–5pm</div>
+                        <div class="item-phone">📞 (310) 392-8630</div>
+                        <div class="item-actions">
+                            <a class="btn-xs btn-xs-primary" href="#">Directions</a>
+                            <a class="btn-xs btn-xs-outline" href="#">Website</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="status-dot dot-amber"></div>
+                    <div class="item-content">
+                        <div class="item-top">
+                            <div class="item-name">DPSS East LA — CalFresh, Medi-Cal</div>
+                            <span class="badge badge-government">Gov't</span>
+                        </div>
+                        <div class="item-meta">📍 5445 Whittier Blvd, Los Angeles</div>
+                        <div class="item-meta">🕐 Mon–Fri 7:30am–5pm</div>
+                        <div class="item-phone">📞 (866) 613-3777</div>
+                        <div class="item-actions">
+                            <a class="btn-xs btn-xs-primary" href="#">Directions</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="status-dot dot-green"></div>
+                    <div class="item-content">
+                        <div class="item-top">
+                            <div class="item-name">Inner City Law Center</div>
+                            <span class="badge badge-financial">Financial</span>
+                        </div>
+                        <div class="item-meta">📍 1309 E 7th St, Los Angeles</div>
+                        <div class="item-meta">🕐 Mon–Fri 9am–5pm</div>
+                        <div class="item-phone">📞 (213) 891-2880</div>
+                        <div class="item-actions">
+                            <a class="btn-xs btn-xs-primary" href="#">Directions</a>
+                            <a class="btn-xs btn-xs-outline" href="#">Website</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end panel-body -->
+        </div><!-- end list-panel -->
+
+        <!-- MAP AREA (placeholder) -->
+        <div class="map-area">
+            <div class="map-placeholder">
+
+                <!-- Roads - horizontal -->
+                <div class="map-road road-h" style="top: 30%"></div>
+                <div class="map-road road-h" style="top: 55%"></div>
+                <div class="map-road road-h" style="top: 70%"></div>
+                <div class="map-road road-h-wide" style="top: 42%"></div>
+
+                <!-- Roads - vertical -->
+                <div class="map-road road-v" style="left: 20%"></div>
+                <div class="map-road road-v" style="left: 45%"></div>
+                <div class="map-road road-v" style="left: 65%"></div>
+                <div class="map-road road-v-wide" style="left: 35%"></div>
+                <div class="map-road road-v-wide" style="left: 78%"></div>
+
+                <!-- Blocks -->
+                <div class="map-block" style="background:rgba(180,200,190,0.5);left:22%;top:18%;width:100px;height:60px;"></div>
+                <div class="map-block" style="background:rgba(170,195,180,0.5);left:47%;top:32%;width:130px;height:50px;"></div>
+                <div class="map-block" style="background:rgba(175,200,185,0.5);left:22%;top:56%;width:90px;height:80px;"></div>
+                <div class="map-block" style="background:rgba(155,185,165,0.6);left:67%;top:10%;width:200px;height:70px;border-radius:4px;"></div>
+                <div class="map-block" style="background:rgba(160,190,170,0.5);left:37%;top:60%;width:80px;height:60px;"></div>
+                <div class="map-block" style="background:rgba(130,175,145,0.4);left:50%;top:60%;width:120px;height:90px;"></div>
+
+                <!-- Pins -->
+                <!-- Selected pin (LA Food Bank) - large -->
+                <div class="map-pin" style="left:45%;top:52%">
+                    <div class="pin-shape" style="background:#F59E0B;width:36px;height:36px">
+                        <span class="pin-icon">🍎</span>
+                    </div>
+                </div>
+
+                <!-- Other pins -->
+                <div class="map-pin" style="left:35%;top:44%">
+                    <div class="pin-shape" style="background:#F59E0B">
+                        <span class="pin-icon">🍎</span>
+                    </div>
+                </div>
+                <div class="map-pin" style="left:36%;top:44.4%">
+                    <div class="pin-shape" style="background:#3B82F6">
+                        <span class="pin-icon">🏠</span>
+                    </div>
+                </div>
+                <div class="map-pin" style="left:20%;top:68%">
+                    <div class="pin-shape" style="background:#EC4899">
+                        <span class="pin-icon">🏥</span>
+                    </div>
+                </div>
+                <div class="map-pin" style="left:62%;top:36%">
+                    <div class="pin-shape" style="background:#8B5CF6">
+                        <span class="pin-icon">🏛️</span>
+                    </div>
+                </div>
+                <div class="map-pin" style="left:74%;top:56%">
+                    <div class="pin-shape" style="background:#10B981">
+                        <span class="pin-icon">💼</span>
+                    </div>
+                </div>
+                <div class="map-pin" style="left:28%;top:28%">
+                    <div class="pin-shape" style="background:#3B82F6">
+                        <span class="pin-icon">🏠</span>
+                    </div>
+                </div>
+                <div class="map-pin" style="left:53%;top:72%">
+                    <div class="pin-shape" style="background:#F59E0B">
+                        <span class="pin-icon">🍎</span>
+                    </div>
+                </div>
+
+                <!-- Popup over selected pin -->
+                <div class="map-popup" style="left:45%;top:52%">
+                    <div class="popup">
+                        <div class="popup-head">
+                            <div class="popup-head-icon" style="background:#FEF3C7">🍎</div>
+                            <div class="popup-head-text">
+                                <div class="popup-head-name">Los Angeles Regional Food Bank</div>
+                                <div class="popup-head-cat" style="color:#92400E">Food</div>
+                            </div>
+                        </div>
+                        <div class="popup-body">
+                            <div class="popup-row">
+                                <span class="popup-row-label">Address</span>
+                                <span class="popup-row-value">1734 E 41st St<br>Los Angeles</span>
+                            </div>
+                            <div class="popup-row">
+                                <span class="popup-row-label">Phone</span>
+                                <span class="popup-row-value green">(323) 234-3030</span>
+                            </div>
+                            <div class="popup-row">
+                                <span class="popup-row-label">Hours</span>
+                                <span class="popup-row-value">Mon–Fri 8am–4pm</span>
+                            </div>
+                        </div>
+                        <div class="popup-footer">
+                            <a class="popup-btn popup-btn-primary" href="#">Directions ↗</a>
+                            <a class="popup-btn popup-btn-secondary" href="#">Website ↗</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zoom controls -->
+                <div class="map-zoom">
+                    <div class="zoom-btn">+</div>
+                    <div class="zoom-btn">−</div>
+                </div>
+
+                <div class="map-attribution">© CARTO © OpenStreetMap</div>
+
+            </div><!-- end map-placeholder -->
+
+            <!-- FAB -->
+            <button class="fab">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Suggest a Place
+            </button>
+
+        </div><!-- end map-area -->
+
+    </div><!-- end app-body -->
+
+</div><!-- end app-frame -->
+
+
+<!-- ═══════════════════════════════════════════════════
+     MOBILE LAYOUT
+═══════════════════════════════════════════════════ -->
+<div class="layout-label">Mobile — 390px (iPhone 14)</div>
+
+<div class="comparison">
+    <div>
+        <div class="comparison-col-label">Default state — category browse</div>
+        <div class="mobile-frame">
+
+            <!-- Status bar -->
+            <div class="mobile-status-bar">
+                <span class="mobile-time">9:41</span>
+                <div class="mobile-icons">
+                    <span class="mobile-icon">●●●</span>
+                    <span class="mobile-icon">WiFi</span>
+                    <span class="mobile-icon">🔋</span>
+                </div>
+            </div>
+
+            <!-- Banner -->
+            <div class="mobile-banner">
+                Emergency? Call <a href="#">2-1-1</a> &nbsp;|&nbsp; Crisis: <a href="#">9-8-8</a>
+            </div>
+
+            <!-- Topbar -->
+            <div class="mobile-topbar">
+                <div class="mobile-logo">
+                    <div class="mobile-logo-mark">🗺</div>
+                    <div class="mobile-logo-name">Find Help LA</div>
+                </div>
+                <div class="mobile-search">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                    <span class="mobile-search-text">Search resources…</span>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div class="mobile-map">
+                <div class="mobile-map-road-h" style="top:35%"></div>
+                <div class="mobile-map-road-h" style="top:60%"></div>
+                <div class="mobile-map-road-h-wide" style="top:48%"></div>
+                <div class="mobile-map-road-v" style="left:30%"></div>
+                <div class="mobile-map-road-v" style="left:60%"></div>
+                <div class="mobile-map-road-v-wide" style="left:45%"></div>
+
+                <!-- Pins -->
+                <div class="mobile-pin" style="left:46%;top:50%">
+                    <div class="mobile-pin-shape" style="background:#F59E0B">
+                        <span class="mobile-pin-icon">🍎</span>
+                    </div>
+                </div>
+                <div class="mobile-pin" style="left:32%;top:38%">
+                    <div class="mobile-pin-shape" style="background:#3B82F6">
+                        <span class="mobile-pin-icon">🏠</span>
+                    </div>
+                </div>
+                <div class="mobile-pin" style="left:62%;top:40%">
+                    <div class="mobile-pin-shape" style="background:#EC4899">
+                        <span class="mobile-pin-icon">🏥</span>
+                    </div>
+                </div>
+                <div class="mobile-pin" style="left:55%;top:65%">
+                    <div class="mobile-pin-shape" style="background:#8B5CF6">
+                        <span class="mobile-pin-icon">🏛️</span>
+                    </div>
+                </div>
+                <div class="mobile-pin" style="left:25%;top:62%">
+                    <div class="mobile-pin-shape" style="background:#10B981">
+                        <span class="mobile-pin-icon">💼</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category chips -->
+            <div class="mobile-cats">
+                <div class="mobile-chip active">All</div>
+                <div class="mobile-chip">🍎 Food</div>
+                <div class="mobile-chip">🏠 Shelter</div>
+                <div class="mobile-chip">🏥 Healthcare</div>
+                <div class="mobile-chip">🏛 Gov't</div>
+                <div class="mobile-chip">💼 Financial</div>
+            </div>
+
+            <!-- List -->
+            <div class="mobile-list">
+                <div class="mobile-list-header">23 resources</div>
+
+                <div class="mobile-list-item active">
+                    <div class="status-dot dot-green" style="margin-top:5px"></div>
+                    <div class="mobile-list-content">
+                        <div class="mobile-item-top">
+                            <div class="mobile-item-name">LA Regional Food Bank</div>
+                            <span class="badge badge-food">Food</span>
+                        </div>
+                        <div class="mobile-item-meta">📍 1734 E 41st St</div>
+                        <div class="mobile-item-phone">📞 (323) 234-3030</div>
+                    </div>
+                </div>
+
+                <div class="mobile-list-item">
+                    <div class="status-dot dot-green" style="margin-top:5px"></div>
+                    <div class="mobile-list-content">
+                        <div class="mobile-item-top">
+                            <div class="mobile-item-name">Midnight Mission — Free Meals</div>
+                            <span class="badge badge-food">Food</span>
+                        </div>
+                        <div class="mobile-item-meta">📍 601 S San Pedro St</div>
+                        <div class="mobile-item-phone">📞 (213) 624-9258</div>
+                    </div>
+                </div>
+
+                <div class="mobile-list-item">
+                    <div class="status-dot dot-green" style="margin-top:5px"></div>
+                    <div class="mobile-list-content">
+                        <div class="mobile-item-top">
+                            <div class="mobile-item-name">Union Rescue Mission</div>
+                            <span class="badge badge-shelter">Shelter</span>
+                        </div>
+                        <div class="mobile-item-meta">📍 545 S San Pedro St</div>
+                        <div class="mobile-item-phone">📞 (213) 347-6300</div>
+                    </div>
+                </div>
+
+                <div class="mobile-list-item">
+                    <div class="status-dot dot-green" style="margin-top:5px"></div>
+                    <div class="mobile-list-content">
+                        <div class="mobile-item-top">
+                            <div class="mobile-item-name">Venice Family Clinic</div>
+                            <span class="badge badge-health">Healthcare</span>
+                        </div>
+                        <div class="mobile-item-meta">📍 604 Rose Ave, Venice</div>
+                        <div class="mobile-item-phone">📞 (310) 392-8630</div>
+                    </div>
+                </div>
+
+            </div><!-- end mobile-list -->
+
+            <!-- Bottom tab bar -->
+            <div class="mobile-tabs">
+                <div class="mobile-tab active">
+                    <div class="mobile-tab-icon">🗺</div>
+                    <div class="mobile-tab-label" style="color:var(--green-700)">Map</div>
+                </div>
+                <div class="mobile-tab">
+                    <div class="mobile-tab-icon">➕</div>
+                    <div class="mobile-tab-label">Suggest</div>
+                </div>
+                <div class="mobile-tab">
+                    <div class="mobile-tab-icon">💛</div>
+                    <div class="mobile-tab-label">Donate</div>
+                </div>
+                <div class="mobile-tab">
+                    <div class="mobile-tab-icon">ℹ️</div>
+                    <div class="mobile-tab-label">About</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div>
+        <div class="comparison-col-label">Empty / no results state</div>
+        <div class="mobile-frame">
+
+            <!-- Status bar -->
+            <div class="mobile-status-bar">
+                <span class="mobile-time">9:41</span>
+                <div class="mobile-icons">
+                    <span class="mobile-icon">●●●</span>
+                    <span class="mobile-icon">WiFi</span>
+                    <span class="mobile-icon">🔋</span>
+                </div>
+            </div>
+
+            <div class="mobile-banner">
+                Emergency? Call <a href="#">2-1-1</a> &nbsp;|&nbsp; Crisis: <a href="#">9-8-8</a>
+            </div>
+
+            <div class="mobile-topbar">
+                <div class="mobile-logo">
+                    <div class="mobile-logo-mark">🗺</div>
+                    <div class="mobile-logo-name">Find Help LA</div>
+                </div>
+                <div class="mobile-search" style="border-color:var(--green-700);background:white;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                    <span class="mobile-search-text" style="color:#374151">dentist free…</span>
+                </div>
+            </div>
+
+            <div class="mobile-map">
+                <div class="mobile-map-road-h" style="top:35%"></div>
+                <div class="mobile-map-road-h" style="top:60%"></div>
+                <div class="mobile-map-road-h-wide" style="top:48%"></div>
+                <div class="mobile-map-road-v" style="left:30%"></div>
+                <div class="mobile-map-road-v" style="left:60%"></div>
+                <div class="mobile-map-road-v-wide" style="left:45%"></div>
+                <!-- No pins — search returned nothing -->
+            </div>
+
+            <div class="mobile-cats">
+                <div class="mobile-chip active">All</div>
+                <div class="mobile-chip">🍎 Food</div>
+                <div class="mobile-chip">🏠 Shelter</div>
+                <div class="mobile-chip">🏥 Healthcare</div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="mobile-list">
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    <div class="empty-title">Nothing found</div>
+                    <p class="empty-msg">Try a different search or category. Or call 2-1-1 — they can find anything in LA County.</p>
+                    <a class="empty-link" href="#">Call 2-1-1 for help →</a>
+                </div>
+            </div>
+
+            <div class="mobile-tabs">
+                <div class="mobile-tab active">
+                    <div class="mobile-tab-icon">🗺</div>
+                    <div class="mobile-tab-label" style="color:var(--green-700)">Map</div>
+                </div>
+                <div class="mobile-tab">
+                    <div class="mobile-tab-icon">➕</div>
+                    <div class="mobile-tab-label">Suggest</div>
+                </div>
+                <div class="mobile-tab">
+                    <div class="mobile-tab-icon">💛</div>
+                    <div class="mobile-tab-label">Donate</div>
+                </div>
+                <div class="mobile-tab">
+                    <div class="mobile-tab-icon">ℹ️</div>
+                    <div class="mobile-tab-label">About</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div><!-- end comparison -->
+
+</body>
+</html>

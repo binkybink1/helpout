@@ -383,13 +383,42 @@
             border-color: var(--t-primary);
         }
 
-        .location-note {
+        .location-pick { flex-shrink: 0; }
+
+        .location-pick-display {
+            display: flex;
+            align-items: center;
+            gap: 4px;
             font-size: var(--text-xs);
             color: var(--t-text-faint);
             font-weight: 600;
             white-space: nowrap;
-            flex-shrink: 0;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: var(--r-full);
+            border: 1px solid var(--t-border);
+            background: var(--t-input-bg);
+            transition: all 0.15s;
+            user-select: none;
         }
+        .location-pick-display:hover {
+            color: var(--t-primary);
+            border-color: var(--t-primary);
+        }
+        .location-pick-input {
+            display: none;
+            height: 28px;
+            padding: 0 10px;
+            border: 1.5px solid var(--t-primary);
+            border-radius: var(--r-full);
+            font-family: var(--font-body);
+            font-size: var(--text-xs);
+            background: var(--t-input-bg);
+            color: var(--t-text);
+            outline: none;
+            width: 170px;
+        }
+        .location-error { border-color: #ef4444 !important; }
 
         /* ── MAIN LAYOUT ─────────────────────────────────── */
         .app {
@@ -917,7 +946,7 @@
             body { overflow: auto; }
             .app { flex-direction: column; overflow: auto; }
             .chips { display: none; }
-            .location-note { display: none; }
+            .location-pick { display: none; }
             .topbar-divider { display: none; }
             .logo-sub { display: none; }
             .list-panel {
@@ -988,7 +1017,15 @@
         🌙
     </button>
 
-    <span class="location-note">LA County</span>
+    <div class="location-pick" id="locationPick">
+        <span class="location-pick-display" id="locationPickDisplay" onclick="editLocation()" title="Change location">
+            📍 <span id="locationPickText">LA County</span>
+        </span>
+        <input type="text" class="location-pick-input" id="locationPickInput"
+            placeholder="City, state or zip..."
+            onblur="commitLocation()"
+            onkeydown="if(event.key==='Enter'){this.blur();}if(event.key==='Escape')cancelLocation();">
+    </div>
 </div>
 
 <!-- MAIN APP -->
@@ -1479,6 +1516,60 @@ async function submitSuggestion() {
     openModal("success");
     ["f-name","f-cat","f-addr","f-phone","f-hours","f-web","f-notes"]
         .forEach(id => { document.getElementById(id).value = ""; });
+}
+
+// ============================================================
+//  LOCATION PICKER
+// ============================================================
+function editLocation() {
+    const display = document.getElementById('locationPickDisplay');
+    const input   = document.getElementById('locationPickInput');
+    input.value = document.getElementById('locationPickText').textContent.trim();
+    display.style.display = 'none';
+    input.style.display   = '';
+    input.classList.remove('location-error');
+    input.focus();
+    input.select();
+}
+
+function cancelLocation() {
+    document.getElementById('locationPickDisplay').style.display = '';
+    const input = document.getElementById('locationPickInput');
+    input.style.display = 'none';
+    input.classList.remove('location-error');
+}
+
+async function commitLocation() {
+    const input = document.getElementById('locationPickInput');
+    const q = input.value.trim();
+    if (!q) { cancelLocation(); return; }
+
+    try {
+        const res  = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&countrycodes=us`,
+            { headers: { 'User-Agent': 'FindHelpLA/1.0 (alison.grippo@gmail.com)' } }
+        );
+        const data = await res.json();
+
+        if (!data.length) {
+            input.classList.add('location-error');
+            setTimeout(() => input.classList.remove('location-error'), 1800);
+            return;
+        }
+
+        const { lat, lon, display_name } = data[0];
+        const parts = display_name.split(',');
+        const shortName = parts.slice(0, 2).join(',').trim();
+
+        document.getElementById('locationPickText').textContent = shortName;
+        document.querySelector('.logo-sub').textContent = shortName;
+        cancelLocation();
+
+        leafletMap.flyTo([parseFloat(lat), parseFloat(lon)], 12, { animate: true, duration: 0.9 });
+        renderList();
+    } catch(e) {
+        cancelLocation();
+    }
 }
 
 // ============================================================
